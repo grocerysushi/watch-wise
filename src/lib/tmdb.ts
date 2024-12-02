@@ -94,3 +94,18 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
     watch_providers: providers.results?.US
   };
 }
+
+export async function searchMedia(query: string): Promise<Media[]> {
+  const response = await fetch(
+    `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await response.json();
+  return data.results.filter((item: any) => 
+    (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
+  );
+}
