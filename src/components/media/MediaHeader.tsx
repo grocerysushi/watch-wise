@@ -19,7 +19,7 @@ export function MediaHeader({ title, year, status, backdropPath }: MediaHeaderPr
         variant="ghost"
         size="sm"
         className="mb-4"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/')}
       >
         <ArrowLeft className="mr-2" />
         Back
