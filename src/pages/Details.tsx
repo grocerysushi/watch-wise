@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMediaDetails } from "@/lib/tmdb";
-import { Clock, Calendar, Play, Monitor } from "lucide-react";
+import { Clock, Calendar, Play, Monitor, ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
@@ -13,6 +14,7 @@ import {
 
 const Details = () => {
   const { type, id } = useParams();
+  const navigate = useNavigate();
   
   const { data: media, isLoading } = useQuery({
     queryKey: ["media", id, type],
@@ -52,6 +54,16 @@ const Details = () => {
 
   return (
     <div className="container min-h-screen pt-24 pb-8 animate-fade-up">
+      <Button
+        variant="ghost"
+        size="sm"
+        className="mb-4"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft className="mr-2" />
+        Back
+      </Button>
+
       <div className="relative h-[400px] rounded-lg overflow-hidden mb-8">
         <img
           src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`}
