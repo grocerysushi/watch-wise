@@ -29,8 +29,28 @@ interface WatchProviders {
   flatrate?: WatchProvider[];
 }
 
+interface Episode {
+  id: number;
+  name: string;
+  overview: string;
+  air_date: string;
+  episode_number: number;
+  season_number: number;
+}
+
+interface Season {
+  id: number;
+  name: string;
+  overview: string;
+  air_date: string;
+  episode_count: number;
+  season_number: number;
+  episodes?: Episode[];
+}
+
 export interface MediaDetails extends Media {
   watch_providers?: WatchProviders;
+  seasons?: Season[];
 }
 
 export async function getTrending(): Promise<Media[]> {
@@ -54,6 +74,19 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
 
   const details = await detailsResponse.json();
   const providers = await providersResponse.json();
+
+  if (type === "tv" && details.seasons) {
+    const seasonPromises = details.seasons.map(async (season: Season) => {
+      const seasonResponse = await fetch(
+        `${BASE_URL}/tv/${id}/season/${season.season_number}?api_key=${API_KEY}`
+      );
+      const seasonData = await seasonResponse.json();
+      return seasonData;
+    });
+
+    const seasons = await Promise.all(seasonPromises);
+    details.seasons = seasons;
+  }
 
   return {
     ...details,
