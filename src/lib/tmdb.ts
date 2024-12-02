@@ -12,6 +12,25 @@ export interface Media {
   media_type: "movie" | "tv";
   first_air_date?: string;
   release_date?: string;
+  status?: string;
+  runtime?: number;
+  number_of_seasons?: number;
+  number_of_episodes?: number;
+}
+
+interface WatchProvider {
+  provider_name: string;
+  logo_path: string;
+}
+
+interface WatchProviders {
+  rent?: WatchProvider[];
+  buy?: WatchProvider[];
+  flatrate?: WatchProvider[];
+}
+
+export interface MediaDetails extends Media {
+  watch_providers?: WatchProviders;
 }
 
 export async function getTrending(): Promise<Media[]> {
@@ -27,14 +46,18 @@ export async function getTrending(): Promise<Media[]> {
   return data.results;
 }
 
-export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<Media> {
-  const response = await fetch(
-    `${BASE_URL}/${type}/${id}?api_key=${API_KEY}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-  return response.json();
+export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<MediaDetails> {
+  const [detailsResponse, providersResponse] = await Promise.all([
+    fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}`),
+    fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${API_KEY}`)
+  ]);
+
+  const details = await detailsResponse.json();
+  const providers = await providersResponse.json();
+
+  return {
+    ...details,
+    media_type: type,
+    watch_providers: providers.results?.US
+  };
 }
