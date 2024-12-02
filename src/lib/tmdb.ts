@@ -1,4 +1,4 @@
-const ACCESS_TOKEN = import.meta.env.VITE_TMDB_ACCESS_TOKEN;
+const API_KEY = "0516f25de82267acf54e3dd3fc372307";
 const BASE_URL = "https://api.themoviedb.org/3";
 
 export interface Media {
@@ -16,10 +16,9 @@ export interface Media {
 
 export async function getTrending(): Promise<Media[]> {
   const response = await fetch(
-    `${BASE_URL}/trending/all/week`,
+    `${BASE_URL}/trending/all/week?api_key=${API_KEY}`,
     {
       headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
       },
     }
@@ -30,10 +29,9 @@ export async function getTrending(): Promise<Media[]> {
 
 export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<Media> {
   const response = await fetch(
-    `${BASE_URL}/${type}/${id}`,
+    `${BASE_URL}/${type}/${id}?api_key=${API_KEY}`,
     {
       headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
       },
     }
