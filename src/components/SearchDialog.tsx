@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Command } from "@/components/ui/command";
+import { Command, CommandInput, CommandList } from "@/components/ui/command";
 import { SearchResults } from "@/components/search/SearchResults";
 import { useQuery } from "@tanstack/react-query";
 import { searchMedia } from "@/lib/tmdb";
@@ -30,18 +30,20 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="gap-0 p-0">
         <Command className="rounded-lg border shadow-md">
-          <input
+          <CommandInput
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 px-4"
+            onValueChange={setQuery}
+            className="h-11"
             placeholder="Search movies & TV shows..."
           />
-          <SearchResults
-            query={query}
-            results={results}
-            isLoading={isLoading}
-            onSelect={handleSelect}
-          />
+          <CommandList>
+            <SearchResults
+              query={query}
+              results={results}
+              isLoading={isLoading}
+              onSelect={handleSelect}
+            />
+          </CommandList>
         </Command>
       </DialogContent>
     </Dialog>
