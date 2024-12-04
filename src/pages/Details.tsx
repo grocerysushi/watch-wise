@@ -51,7 +51,14 @@ const Details = () => {
 
   return (
     <div className="container min-h-screen pt-24 pb-8 animate-fade-up">
-      <div className="grid md:grid-cols-[300px,1fr] gap-8">
+      <MediaHeader
+        title={title}
+        year={year.toString()}
+        status={media.status}
+        backdropPath={media.backdrop_path}
+      />
+
+      <div className="grid md:grid-cols-[400px,1fr] gap-8">
         <div className="relative group">
           <img
             src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
@@ -72,13 +79,6 @@ const Details = () => {
         </div>
 
         <div className="space-y-6">
-          <MediaHeader
-            title={title}
-            year={year.toString()}
-            status={media.status}
-            backdropPath={media.backdrop_path}
-          />
-
           <MediaOverview
             overview={media.overview}
             runtime={media.runtime}
