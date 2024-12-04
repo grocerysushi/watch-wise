@@ -29,33 +29,38 @@ export function SearchDialog() {
     queryKey: ["search", query],
     queryFn: async () => {
       if (!query) return [];
-      console.log("Making API call for:", query);
       const results = await searchMedia(query);
-      console.log("API results:", results);
       return results;
     },
     enabled: query.length > 0,
     staleTime: 1000 * 60 * 5, // Cache results for 5 minutes
   });
 
-  const handleSelect = (mediaType: string, id: number) => {
+  const handleSelect = React.useCallback((mediaType: string, id: number) => {
     setOpen(false);
     setQuery("");
     navigate(`/${mediaType}/${id}`);
     toast({
       description: "Press ⌘K to search again",
     });
-  };
+  }, [navigate, toast]);
 
-  const handleQueryChange = (newQuery: string) => {
-    console.log("Query changed to:", newQuery);
+  const handleQueryChange = React.useCallback((newQuery: string) => {
     setQuery(newQuery);
-  };
+  }, []);
 
   return (
     <>
       <SearchButton onClick={() => setOpen(true)} />
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog 
+        open={open} 
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (!isOpen) {
+            setQuery("");
+          }
+        }}
+      >
         <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
         <CommandInput
           placeholder="Search movies & TV shows..."
