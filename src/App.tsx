@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Details from "./pages/Details";
 import Login from "./pages/Login";
 import Favorites from "./pages/Favorites";
+import Upcoming from "./pages/Upcoming";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
               <Route path="/:type/:id" element={<Details />} />
               <Route path="/login" element={<Login />} />
               <Route path="/favorites" element={<Favorites />} />
+              <Route path="/upcoming" element={<Upcoming />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>

@@ -130,3 +130,19 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
     watch_providers: providers.results?.US
   };
 }
+
+export async function getUpcoming(): Promise<Media[]> {
+  const response = await fetch(
+    `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&region=US`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+  const data = await response.json();
+  return data.results.map((movie: any) => ({
+    ...movie,
+    media_type: "movie" as const,
+  }));
+}

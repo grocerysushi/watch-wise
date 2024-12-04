@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { SearchButton } from "@/components/search/SearchButton";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, LogIn, LogOut } from "lucide-react";
+import { Heart, LogIn, LogOut, Calendar } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -32,6 +32,11 @@ export function Navigation() {
           </Link>
           <div className="flex items-center gap-2">
             <SearchButton onClick={() => setShowSearch(true)} />
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/upcoming">
+                <Calendar className="h-5 w-5" />
+              </Link>
+            </Button>
             {user ? (
               <>
                 <Button variant="ghost" size="icon" asChild>
