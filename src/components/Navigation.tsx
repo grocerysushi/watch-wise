@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { SearchButton } from "@/components/search/SearchButton";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, LogIn, LogOut, Calendar } from "lucide-react";
+import { Heart, LogIn, LogOut, Calendar, Home } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -27,9 +27,16 @@ export function Navigation() {
       <SearchDialog open={showSearch} onOpenChange={setShowSearch} />
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-sm">
         <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="text-xl font-bold">
-            WatchWise
-          </Link>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/">
+                <Home className="h-5 w-5" />
+              </Link>
+            </Button>
+            <Link to="/" className="text-xl font-bold">
+              WatchWise
+            </Link>
+          </div>
           <div className="flex items-center gap-2">
             <SearchButton onClick={() => setShowSearch(true)} />
             <Button variant="ghost" size="icon" asChild>
