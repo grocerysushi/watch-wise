@@ -1,66 +1,49 @@
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Command } from "@/components/ui/command";
+import { SearchResults } from "@/components/search/SearchResults";
 import { useQuery } from "@tanstack/react-query";
-import { CommandDialog, CommandInput, CommandList } from "@/components/ui/command";
-import { DialogTitle } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
 import { searchMedia } from "@/lib/tmdb";
-import { SearchButton } from "./search/SearchButton";
-import { SearchResults } from "./search/SearchResults";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export function SearchDialog() {
-  const [open, setOpen] = React.useState(false);
-  const [query, setQuery] = React.useState("");
+interface SearchDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
-    queryFn: async () => {
-      if (!query) return [];
-      const results = await searchMedia(query);
-      return results;
-    },
+    queryFn: () => searchMedia(query),
     enabled: query.length > 0,
-    staleTime: 1000 * 60 * 5, // Cache results for 5 minutes
   });
 
-  const handleSelect = React.useCallback((mediaType: string, id: number) => {
-    setOpen(false);
-    setQuery("");
+  const handleSelect = (mediaType: string, id: number) => {
     navigate(`/${mediaType}/${id}`);
-    toast({
-      description: "Press the search button to search again",
-    });
-  }, [navigate, toast]);
+    onOpenChange(false);
+  };
 
   return (
-    <>
-      <SearchButton onClick={() => setOpen(true)} />
-      <CommandDialog 
-        open={open} 
-        onOpenChange={(isOpen) => {
-          setOpen(isOpen);
-          if (!isOpen) {
-            setQuery("");
-          }
-        }}
-      >
-        <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
-        <CommandInput
-          placeholder="Search movies & TV shows..."
-          value={query}
-          onValueChange={setQuery}
-        />
-        <CommandList>
-          <SearchResults
-            isLoading={isLoading}
-            results={results}
-            onSelect={handleSelect}
-            query={query}
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="gap-0 p-0">
+        <Command className="rounded-lg border shadow-md">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 px-4"
+            placeholder="Search movies & TV shows..."
           />
-        </CommandList>
-      </CommandDialog>
-    </>
+          <SearchResults
+            query={query}
+            results={results}
+            isLoading={isLoading}
+            onSelect={handleSelect}
+          />
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 }
