@@ -4,30 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { Media } from "@/lib/tmdb";
-
-const Favorites = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
-
-  const { data: favoritesI'll create a new "Favorites" page where users can view all their favorited movies and TV shows.
-
-<lov-code>
-First, let's create a new Favorites page component:
-
-<lov-write file_path="src/pages/Favorites.tsx">
-import { useQuery } from "@tanstack/react-query";
-import { MediaCard } from "@/components/MediaCard";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { getMediaDetails } from "@/lib/tmdb";
 
 const Favorites = () => {
