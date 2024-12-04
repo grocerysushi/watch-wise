@@ -26,18 +26,18 @@ export function Navigation() {
     <>
       <SearchDialog open={showSearch} onOpenChange={setShowSearch} />
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-sm">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="container flex h-16 items-center">
+          <div className="flex-1">
             <Button variant="ghost" size="icon" asChild>
               <Link to="/">
                 <Home className="h-5 w-5" />
               </Link>
             </Button>
-            <Link to="/" className="text-xl font-bold">
-              WatchWise
-            </Link>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex-1 text-center">
+            <span className="text-xl font-bold">WatchWise</span>
+          </div>
+          <div className="flex flex-1 items-center justify-end gap-2">
             <SearchButton onClick={() => setShowSearch(true)} />
             <Button variant="ghost" size="icon" asChild>
               <Link to="/upcoming">
