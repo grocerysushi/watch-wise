@@ -27,7 +27,12 @@ export function SearchDialog() {
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
-    queryFn: () => searchMedia(query),
+    queryFn: async () => {
+      console.log("Searching for:", query);
+      const results = await searchMedia(query);
+      console.log("Search results:", results);
+      return results;
+    },
     enabled: query.length > 0,
     staleTime: 1000 * 60 * 5, // Cache results for 5 minutes
   });
@@ -39,6 +44,11 @@ export function SearchDialog() {
     toast({
       description: "Press ⌘K to search again",
     });
+  };
+
+  const handleQueryChange = (newQuery: string) => {
+    console.log("Query changed to:", newQuery);
+    setQuery(newQuery);
   };
 
   // Reset query when dialog is closed
@@ -56,7 +66,7 @@ export function SearchDialog() {
         <CommandInput
           placeholder="Search movies & TV shows..."
           value={query}
-          onValueChange={setQuery}
+          onValueChange={handleQueryChange}
         />
         <CommandList>
           <SearchResults

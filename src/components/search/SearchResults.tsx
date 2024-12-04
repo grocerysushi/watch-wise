@@ -9,6 +9,8 @@ interface SearchResultsProps {
 }
 
 export function SearchResults({ isLoading, results, onSelect, query }: SearchResultsProps) {
+  console.log("SearchResults render:", { query, isLoading, resultsLength: results?.length });
+
   if (!query) {
     return null;
   }
