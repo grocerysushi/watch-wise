@@ -14,17 +14,6 @@ export function SearchDialog() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
-
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
     queryFn: async () => {
@@ -41,7 +30,7 @@ export function SearchDialog() {
     setQuery("");
     navigate(`/${mediaType}/${id}`);
     toast({
-      description: "Press ⌘K to search again",
+      description: "Press the search button to search again",
     });
   }, [navigate, toast]);
 
