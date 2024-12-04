@@ -15,6 +15,7 @@ interface MediaProvidersProps {
 
 const providerUrls: { [key: string]: string } = {
   "Netflix": "https://www.netflix.com",
+  "Prime Video": "https://www.amazon.com/Prime-Video",
   "Amazon Prime Video": "https://www.amazon.com/Prime-Video",
   "Disney Plus": "https://www.disneyplus.com",
   "Hulu": "https://www.hulu.com",
