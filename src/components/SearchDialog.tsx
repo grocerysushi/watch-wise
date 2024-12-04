@@ -29,6 +29,7 @@ export function SearchDialog() {
     queryKey: ["search", query],
     queryFn: () => searchMedia(query),
     enabled: query.length > 0,
+    staleTime: 1000 * 60 * 5, // Cache results for 5 minutes
   });
 
   const handleSelect = (mediaType: string, id: number) => {
@@ -39,6 +40,13 @@ export function SearchDialog() {
       description: "Press ⌘K to search again",
     });
   };
+
+  // Reset query when dialog is closed
+  React.useEffect(() => {
+    if (!open) {
+      setQuery("");
+    }
+  }, [open]);
 
   return (
     <>
@@ -51,13 +59,12 @@ export function SearchDialog() {
           onValueChange={setQuery}
         />
         <CommandList>
-          {query.length > 0 && (
-            <SearchResults
-              isLoading={isLoading}
-              results={results}
-              onSelect={handleSelect}
-            />
-          )}
+          <SearchResults
+            isLoading={isLoading}
+            results={results}
+            onSelect={handleSelect}
+            query={query}
+          />
         </CommandList>
       </CommandDialog>
     </>

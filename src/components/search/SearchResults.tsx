@@ -5,9 +5,14 @@ interface SearchResultsProps {
   isLoading: boolean;
   results?: Media[];
   onSelect: (mediaType: string, id: number) => void;
+  query: string;
 }
 
-export function SearchResults({ isLoading, results, onSelect }: SearchResultsProps) {
+export function SearchResults({ isLoading, results, onSelect, query }: SearchResultsProps) {
+  if (!query) {
+    return null;
+  }
+
   if (isLoading) {
     return (
       <CommandGroup heading="Results">
