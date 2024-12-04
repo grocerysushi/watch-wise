@@ -52,13 +52,6 @@ export function SearchDialog() {
     setQuery(newQuery);
   };
 
-  // Reset query when dialog is closed
-  React.useEffect(() => {
-    if (!open) {
-      setQuery("");
-    }
-  }, [open]);
-
   return (
     <>
       <SearchButton onClick={() => setOpen(true)} />
