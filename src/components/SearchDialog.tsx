@@ -45,10 +45,6 @@ export function SearchDialog() {
     });
   }, [navigate, toast]);
 
-  const handleQueryChange = React.useCallback((newQuery: string) => {
-    setQuery(newQuery);
-  }, []);
-
   return (
     <>
       <SearchButton onClick={() => setOpen(true)} />
@@ -65,7 +61,7 @@ export function SearchDialog() {
         <CommandInput
           placeholder="Search movies & TV shows..."
           value={query}
-          onValueChange={handleQueryChange}
+          onValueChange={setQuery}
         />
         <CommandList>
           <SearchResults

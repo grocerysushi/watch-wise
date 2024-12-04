@@ -30,6 +30,7 @@ export function SearchResults({ isLoading, results, onSelect, query }: SearchRes
       {results.map((item) => (
         <CommandItem
           key={`${item.media_type}-${item.id}`}
+          value={`${item.title || item.name}-${item.id}`}
           onSelect={() => onSelect(item.media_type, item.id)}
           className="flex items-center gap-2 p-2"
         >
