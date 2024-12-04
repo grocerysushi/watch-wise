@@ -51,28 +51,34 @@ const Details = () => {
 
   return (
     <div className="container min-h-screen pt-24 pb-8 animate-fade-up">
-      <div className="flex items-center justify-between mb-6">
-        <MediaHeader
-          title={title}
-          year={year.toString()}
-          status={media.status}
-          backdropPath={media.backdrop_path}
-        />
-        <Button
-          size="icon"
-          variant="ghost"
-          className={cn(
-            "h-10 w-10",
-            favorite && "text-red-500"
-          )}
-          onClick={handleFavoriteClick}
-        >
-          <Heart className={cn("h-6 w-6", favorite && "fill-current")} />
-        </Button>
-      </div>
+      <div className="grid md:grid-cols-[300px,1fr] gap-8">
+        <div className="relative group">
+          <img
+            src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
+            alt={title}
+            className="w-full rounded-lg"
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            className={cn(
+              "absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100 bg-background/50 backdrop-blur-sm",
+              favorite && "text-red-500 opacity-100"
+            )}
+            onClick={handleFavoriteClick}
+          >
+            <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
+          </Button>
+        </div>
 
-      <div className="grid md:grid-cols-[2fr,1fr] gap-8">
         <div className="space-y-6">
+          <MediaHeader
+            title={title}
+            year={year.toString()}
+            status={media.status}
+            backdropPath={media.backdrop_path}
+          />
+
           <MediaOverview
             overview={media.overview}
             runtime={media.runtime}
@@ -84,11 +90,13 @@ const Details = () => {
             <MediaSeasons seasons={media.seasons} />
           )}
         </div>
-
-        {media.watch_providers && (
-          <MediaProviders providers={media.watch_providers} />
-        )}
       </div>
+
+      {media.watch_providers && (
+        <div className="mt-8">
+          <MediaProviders providers={media.watch_providers} />
+        </div>
+      )}
     </div>
   );
 };
