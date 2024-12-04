@@ -1,12 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getMediaDetails } from "@/lib/tmdb";
-import { MediaHeader } from "@/components/media/MediaHeader";
-import { MediaOverview } from "@/components/media/MediaOverview";
-import { MediaSeasons } from "@/components/media/MediaSeasons";
-import { MediaProviders } from "@/components/media/MediaProviders";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
+import { MediaContent } from "@/components/media/MediaContent";
+import { MediaLoading } from "@/components/media/MediaLoading";
 
 const Details = () => {
   const { type, id } = useParams();
@@ -20,11 +18,7 @@ const Details = () => {
   });
 
   if (isLoading) {
-    return (
-      <div className="container min-h-screen pt-24 pb-8">
-        <div className="h-[400px] animate-pulse rounded-lg bg-muted" />
-      </div>
-    );
+    return <MediaLoading />;
   }
 
   if (!media) return null;
@@ -47,33 +41,13 @@ const Details = () => {
 
   return (
     <div className="container min-h-screen pt-24 pb-8 animate-fade-up">
-      <MediaHeader
+      <MediaContent
+        media={media}
         title={title}
         year={year.toString()}
-        status={media.status}
-        backdropPath={media.backdrop_path}
+        favorite={favorite}
         onFavoriteClick={handleFavoriteClick}
-        isFavorite={favorite}
       />
-
-      <div className="space-y-6">
-        <MediaOverview
-          overview={media.overview}
-          runtime={media.runtime}
-          numberOfSeasons={media.number_of_seasons}
-          numberOfEpisodes={media.number_of_episodes}
-        />
-        
-        {media.media_type === "tv" && media.seasons && (
-          <MediaSeasons seasons={media.seasons} />
-        )}
-      </div>
-
-      {media.watch_providers && (
-        <div className="mt-8">
-          <MediaProviders providers={media.watch_providers} />
-        </div>
-      )}
     </div>
   );
 };
