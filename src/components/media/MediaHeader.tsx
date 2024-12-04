@@ -25,15 +25,27 @@ export function MediaHeader({
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="mb-4"
-        onClick={() => navigate('/')}
-      >
-        <ArrowLeft className="mr-2" />
-        Back
-      </Button>
+      <div className="flex items-center gap-2 mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/')}
+        >
+          <ArrowLeft className="mr-2" />
+          Back
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          className={cn(
+            "transition-colors",
+            isFavorite && "text-red-500"
+          )}
+          onClick={onFavoriteClick}
+        >
+          <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
+        </Button>
+      </div>
 
       <div className="relative h-[400px] rounded-lg overflow-hidden mb-8">
         <img
@@ -42,17 +54,6 @@ export function MediaHeader({
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
-        <Button
-          size="icon"
-          variant="ghost"
-          className={cn(
-            "absolute top-4 right-4 opacity-0 transition-opacity group-hover:opacity-100 bg-background/50 backdrop-blur-sm",
-            isFavorite && "text-red-500 opacity-100"
-          )}
-          onClick={onFavoriteClick}
-        >
-          <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
-        </Button>
         <div className="absolute bottom-0 left-0 p-8">
           <h1 className="text-4xl font-bold mb-2">{title}</h1>
           <div className="flex items-center gap-4">
