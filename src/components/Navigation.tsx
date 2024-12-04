@@ -46,7 +46,7 @@ export function Navigation() {
             </Tooltip>
           </div>
           <div className="flex-1 text-center">
-            <span className="text-xl font-bold">WatchWise</span>
+            <span className="text-xl font-bold">Cueious</span>
           </div>
           <div className="flex flex-1 items-center justify-end gap-2">
             <SearchButton onClick={() => setShowSearch(true)} />
