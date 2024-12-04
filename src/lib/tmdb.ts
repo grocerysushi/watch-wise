@@ -53,6 +53,42 @@ export interface MediaDetails extends Media {
   seasons?: Season[];
 }
 
+export async function searchMedia(query: string): Promise<Media[]> {
+  if (!query) return [];
+  
+  console.log("Making TMDB API call for query:", query);
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      console.error("TMDB API error:", response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("TMDB API response:", data);
+    
+    const filteredResults = data.results.filter((item: any) => 
+      (item.media_type === 'movie' || item.media_type === 'tv') && 
+      (item.title || item.name)
+    );
+    
+    console.log("Filtered results:", filteredResults);
+    return filteredResults;
+  } catch (error) {
+    console.error('TMDB API search error:', error);
+    throw error;
+  }
+}
+
 export async function getTrending(): Promise<Media[]> {
   const response = await fetch(
     `${BASE_URL}/trending/all/week?api_key=${API_KEY}`,
@@ -93,33 +129,4 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
     media_type: type,
     watch_providers: providers.results?.US
   };
-}
-
-export async function searchMedia(query: string): Promise<Media[]> {
-  if (!query) return [];
-  
-  try {
-    const response = await fetch(
-      `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return data.results.filter((item: any) => 
-      (item.media_type === 'movie' || item.media_type === 'tv') && 
-      item.poster_path && 
-      (item.title || item.name)
-    );
-  } catch (error) {
-    console.error('Search error:', error);
-    return [];
-  }
 }

@@ -28,9 +28,10 @@ export function SearchDialog() {
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
     queryFn: async () => {
-      console.log("Searching for:", query);
+      if (!query) return [];
+      console.log("Making API call for:", query);
       const results = await searchMedia(query);
-      console.log("Search results:", results);
+      console.log("API results:", results);
       return results;
     },
     enabled: query.length > 0,
