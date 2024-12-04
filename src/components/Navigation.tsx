@@ -28,7 +28,7 @@ export function Navigation() {
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-sm">
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="text-xl font-bold">
-            Movies
+            WatchWise
           </Link>
           <div className="flex items-center gap-2">
             <SearchButton onClick={() => setShowSearch(true)} />
