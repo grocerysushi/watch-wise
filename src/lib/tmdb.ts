@@ -96,16 +96,30 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
 }
 
 export async function searchMedia(query: string): Promise<Media[]> {
-  const response = await fetch(
-    `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`,
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  if (!query) return [];
+  
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  );
-  const data = await response.json();
-  return data.results.filter((item: any) => 
-    (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
-  );
+    
+    const data = await response.json();
+    return data.results.filter((item: any) => 
+      (item.media_type === 'movie' || item.media_type === 'tv') && 
+      item.poster_path && 
+      (item.title || item.name)
+    );
+  } catch (error) {
+    console.error('Search error:', error);
+    return [];
+  }
 }
