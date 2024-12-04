@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/command";
 import { searchMedia } from "@/lib/tmdb";
 import { useToast } from "@/components/ui/use-toast";
+import { DialogTitle } from "@/components/ui/dialog";
 
 export function SearchDialog() {
   const [open, setOpen] = React.useState(false);
@@ -39,6 +40,7 @@ export function SearchDialog() {
 
   const handleSelect = (mediaType: string, id: number) => {
     setOpen(false);
+    setQuery("");
     navigate(`/${mediaType}/${id}`);
     toast({
       description: "Press ⌘K to search again",
@@ -59,6 +61,7 @@ export function SearchDialog() {
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
+        <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
         <CommandInput
           placeholder="Search movies & TV shows..."
           value={query}
@@ -77,11 +80,15 @@ export function SearchDialog() {
                     onSelect={() => handleSelect(item.media_type, item.id)}
                   >
                     <div className="flex items-center gap-2">
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
-                        alt={item.title || item.name}
-                        className="h-12 w-8 rounded object-cover"
-                      />
+                      {item.poster_path ? (
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
+                          alt={item.title || item.name}
+                          className="h-12 w-8 rounded object-cover"
+                        />
+                      ) : (
+                        <div className="h-12 w-8 rounded bg-muted" />
+                      )}
                       <div>
                         <p className="font-medium">{item.title || item.name}</p>
                         <p className="text-sm text-muted-foreground">
