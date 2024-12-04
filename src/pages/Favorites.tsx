@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { getMediaDetails } from "@/lib/tmdb";
+import { Advertisement } from "@/components/Advertisement";
 
 const Favorites = () => {
   const { user } = useAuth();
@@ -57,14 +58,33 @@ const Favorites = () => {
   return (
     <div className="container min-h-screen pt-24">
       <h1 className="text-3xl font-bold mb-8">My Favorites</h1>
+      
+      {/* Top Advertisement */}
+      <Advertisement slot="YOUR-AD-SLOT-1" />
+      
       {mediaItems.length === 0 ? (
         <p className="text-muted-foreground">You haven't added any favorites yet.</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {mediaItems.map((media) => (
-            <MediaCard key={`${media.media_type}-${media.id}`} media={media} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {mediaItems.map((media, index) => (
+              <>
+                <MediaCard key={`${media.media_type}-${media.id}`} media={media} />
+                {/* Insert ad after every 10 items */}
+                {(index + 1) % 10 === 0 && (
+                  <div className="col-span-full">
+                    <Advertisement slot="YOUR-AD-SLOT-2" />
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
+          
+          {/* Bottom Advertisement */}
+          <div className="mt-8">
+            <Advertisement slot="YOUR-AD-SLOT-3" />
+          </div>
+        </>
       )}
     </div>
   );
