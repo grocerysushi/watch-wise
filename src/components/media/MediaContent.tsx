@@ -20,7 +20,7 @@ export function MediaContent({
   onFavoriteClick 
 }: MediaContentProps) {
   return (
-    <>
+    <div className="animate-fade-up space-y-8">
       <MediaHeader
         title={title}
         year={year}
@@ -44,10 +44,8 @@ export function MediaContent({
       </div>
 
       {media.watch_providers && (
-        <div className="mt-8">
-          <MediaProviders providers={media.watch_providers} />
-        </div>
+        <MediaProviders providers={media.watch_providers} />
       )}
-    </>
+    </div>
   );
 }
