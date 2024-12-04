@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Details from "./pages/Details";
 import Login from "./pages/Login";
+import Favorites from "./pages/Favorites";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/:type/:id" element={<Details />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/favorites" element={<Favorites />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
