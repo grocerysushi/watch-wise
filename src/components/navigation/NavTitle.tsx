@@ -11,7 +11,7 @@ export function NavTitle() {
     const processLogo = async () => {
       try {
         // Fetch the original image
-        const response = await fetch("/lovable-uploads/2c0af9c1-9bcf-46a0-b293-9a90ef54246e.png");
+        const response = await fetch("/lovable-uploads/22434899-cdca-46ff-8872-ba58de7d8908.png");
         const blob = await response.blob();
         
         // Load the image
@@ -30,7 +30,7 @@ export function NavTitle() {
           description: "Failed to process logo image. Using original image instead.",
           variant: "destructive",
         });
-        setProcessedLogoUrl("/lovable-uploads/2c0af9c1-9bcf-46a0-b293-9a90ef54246e.png");
+        setProcessedLogoUrl("/lovable-uploads/22434899-cdca-46ff-8872-ba58de7d8908.png");
       }
     };
 
@@ -48,7 +48,7 @@ export function NavTitle() {
     <div className="flex-1 text-center">
       <div className="inline-flex items-center gap-2">
         <img 
-          src={processedLogoUrl || "/lovable-uploads/2c0af9c1-9bcf-46a0-b293-9a90ef54246e.png"}
+          src={processedLogoUrl || "/lovable-uploads/22434899-cdca-46ff-8872-ba58de7d8908.png"}
           alt="Cueious Logo" 
           className={cn(
             "h-8 w-8",
