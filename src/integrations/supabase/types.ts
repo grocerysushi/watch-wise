@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          last_updated: string | null
           media_id: number
           media_type: string
           user_id: string
@@ -20,6 +21,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          last_updated?: string | null
           media_id: number
           media_type: string
           user_id: string
@@ -27,9 +29,40 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          last_updated?: string | null
           media_id?: number
           media_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          last_login: string | null
+          preferences: Json | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          last_login?: string | null
+          preferences?: Json | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          last_login?: string | null
+          preferences?: Json | null
+          username?: string | null
         }
         Relationships: []
       }

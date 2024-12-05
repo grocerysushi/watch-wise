@@ -1,9 +1,10 @@
-import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import type { Favorite } from "@/lib/types";
 
-export const useFavorites = () => {
+export function useFavorites() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -13,53 +14,54 @@ export const useFavorites = () => {
       if (!user) return [];
       const { data, error } = await supabase
         .from("favorites")
-        .select("media_id, media_type");
-      if (error) throw error;
-      return data;
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching favorites:", error);
+        throw error;
+      }
+      return data as Favorite[];
     },
     enabled: !!user,
   });
 
   const toggleFavorite = useMutation({
-    mutationFn: async ({
-      mediaId,
-      mediaType,
-    }: {
-      mediaId: number;
-      mediaType: string;
-    }) => {
-      if (!user) {
-        throw new Error("Must be logged in");
-      }
+    mutationFn: async ({ mediaId, mediaType }: { mediaId: number; mediaType: string }) => {
+      if (!user) throw new Error("User not authenticated");
 
-      const isFavorite = favorites.some(
+      const existing = favorites.find(
         (f) => f.media_id === mediaId && f.media_type === mediaType
       );
 
-      if (isFavorite) {
+      if (existing) {
         const { error } = await supabase
           .from("favorites")
           .delete()
           .match({ user_id: user.id, media_id: mediaId, media_type: mediaType });
+
         if (error) throw error;
+        return { type: "removed" as const };
       } else {
         const { error } = await supabase.from("favorites").insert({
           user_id: user.id,
           media_id: mediaId,
           media_type: mediaType,
         });
+
         if (error) throw error;
+        return { type: "added" as const };
       }
     },
-    onSuccess: (_, { mediaId, mediaType }) => {
-      queryClient.invalidateQueries({ queryKey: ["favorites", user?.id] });
-      const isFavorite = favorites.some(
-        (f) => f.media_id === mediaId && f.media_type === mediaType
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      toast.success(
+        result.type === "added" ? "Added to favorites" : "Removed from favorites"
       );
-      toast(isFavorite ? "Removed from favorites" : "Added to favorites");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "An error occurred");
+      console.error("Error toggling favorite:", error);
+      toast.error("Failed to update favorites");
     },
   });
 
@@ -71,4 +73,4 @@ export const useFavorites = () => {
     toggleFavorite,
     isFavorite,
   };
-};
+}

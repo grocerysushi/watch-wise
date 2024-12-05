@@ -3,6 +3,7 @@ import { getTrending } from "@/lib/tmdb";
 import { MediaCard } from "@/components/MediaCard";
 import { Helmet } from "react-helmet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useProfile } from "@/hooks/useProfile";
 
 const Index = () => {
   const { data: trending, isLoading } = useQuery({
@@ -10,6 +11,8 @@ const Index = () => {
     queryFn: getTrending,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
   });
+
+  const { profile } = useProfile();
 
   // Create structured data for the trending movies/shows
   const structuredData = {
@@ -58,7 +61,7 @@ const Index = () => {
         <div className="space-y-6">
           <header className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              Trending Movies & TV Shows This Week
+              {profile?.display_name ? `Welcome back, ${profile.display_name}!` : 'Trending Movies & TV Shows This Week'}
             </h1>
             <p className="text-muted-foreground max-w-[800px]">
               Discover the most popular shows and movies trending this week. Stay up to date with what everyone's watching and find your next favorite entertainment.
