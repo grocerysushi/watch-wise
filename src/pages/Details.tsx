@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getMediaDetails } from "@/lib/tmdb";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -13,11 +13,19 @@ const Details = () => {
   const { type, id } = useParams();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const navigate = useNavigate();
   
-  const { data: media, isLoading } = useQuery({
+  const { data: media, isLoading, isError } = useQuery({
     queryKey: ["media", id, type],
-    queryFn: () => getMediaDetails(Number(id), type as "movie" | "tv"),
+    queryFn: () => {
+      if (!id || !type || (type !== "movie" && type !== "tv")) {
+        throw new Error("Invalid media type or ID");
+      }
+      console.log("Fetching details for:", type, id);
+      return getMediaDetails(Number(id), type as "movie" | "tv");
+    },
     enabled: !!id && !!type,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     meta: {
       onSuccess: (data) => {
         // Update sitemap when new media is viewed
@@ -26,11 +34,15 @@ const Details = () => {
     },
   });
 
-  if (isLoading) {
-    return <MediaLoading />;
+  if (isError) {
+    console.error("Error loading media details");
+    navigate("/");
+    return null;
   }
 
-  if (!media) return null;
+  if (isLoading || !media) {
+    return <MediaLoading />;
+  }
 
   const title = media.title || media.name;
   const date = media.release_date || media.first_air_date;
