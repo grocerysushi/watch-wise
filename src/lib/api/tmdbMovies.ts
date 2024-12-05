@@ -1,4 +1,4 @@
-import { MediaDetails } from '../types/media';
+import { MediaDetails, Media } from '../types/media';
 import { API_KEY, BASE_URL } from './tmdbCommon';
 
 export async function getMovieDetails(id: number): Promise<MediaDetails> {
