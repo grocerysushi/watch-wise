@@ -10,10 +10,30 @@ interface MediaSEOProps {
 export function MediaSEO({ media, title, year }: MediaSEOProps) {
   const metaTags = {
     title: `${title} (${year}) - Watch Now | Cueious`,
-    description: `Watch ${title} on ${media.watch_providers?.flatrate?.map(p => p.name).join(", ") || "streaming services"}. ${media.overview?.slice(0, 150)}...`,
+    description: `Watch ${title} on ${media.watch_providers?.flatrate?.map(p => p.provider_name).join(", ") || "streaming services"}. ${media.overview?.slice(0, 150)}...`,
     image: `https://image.tmdb.org/t/p/original${media.backdrop_path || media.poster_path}`,
     url: `https://www.cueious.net/${media.media_type}/${media.id}`,
     keywords: `${title}, ${year}, ${media.media_type}, ${media.genres?.map(g => g.name).join(", ")}, watch online, streaming, movie review, TV series, entertainment, ${media.watch_providers?.flatrate?.map(p => p.provider_name).join(", ")}`
+  };
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": media.media_type === "movie" ? "Movie" : "TVSeries",
+    "name": title,
+    "datePublished": media.release_date || media.first_air_date,
+    "description": media.overview,
+    "image": metaTags.image,
+    "aggregateRating": media.aggregate_rating || {
+      "@type": "AggregateRating",
+      "ratingValue": media.vote_average,
+      "ratingCount": media.vote_count,
+      "bestRating": 10,
+      "worstRating": 0
+    },
+    "genre": media.genres?.map(g => g.name),
+    "duration": media.runtime ? `PT${media.runtime}M` : undefined,
+    "numberOfSeasons": media.number_of_seasons,
+    "numberOfEpisodes": media.number_of_episodes
   };
 
   return (
