@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTrending } from "@/lib/tmdb";
 import { MediaCard } from "@/components/MediaCard";
 import { Helmet } from "react-helmet";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
   const { data: trending, isLoading } = useQuery({
@@ -24,6 +25,18 @@ const Index = () => {
     })) || []
   };
 
+  const LoadingSkeleton = () => (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <div key={i} className="space-y-3">
+          <Skeleton className="aspect-[2/3] w-full rounded-lg" />
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <>
       <Helmet>
@@ -44,23 +57,21 @@ const Index = () => {
           </header>
 
           <section 
-            className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+            className="min-h-[200px]"
             aria-label="Trending movies and TV shows"
           >
-            {isLoading
-              ? Array.from({ length: 10 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="aspect-[2/3] animate-pulse rounded-lg bg-muted"
-                    aria-hidden="true"
-                  />
-                ))
-              : trending?.map((media) => (
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : (
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {trending?.map((media) => (
                   <MediaCard 
                     key={media.id} 
                     media={media}
                   />
                 ))}
+              </div>
+            )}
           </section>
         </div>
       </main>

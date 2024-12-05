@@ -42,6 +42,9 @@ export function MediaCard({ media }: MediaCardProps) {
             alt={title}
             className="h-full w-full object-cover transition-all group-hover:scale-105"
             loading="lazy"
+            width="500"
+            height="750"
+            decoding="async"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100">
