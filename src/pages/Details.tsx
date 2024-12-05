@@ -10,38 +10,39 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { updateSitemapEntry } from "@/lib/seo";
 
 const Details = () => {
-  const { type, id } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const navigate = useNavigate();
-
-  // Add console logs to track the flow
+  
+  // Determine media type from URL
+  const type = window.location.pathname.includes('/tv/') ? 'tv' : 'movie';
+  
   console.log("Details page mounted, params:", { type, id });
   
   const { data: media, isLoading, isError } = useQuery({
     queryKey: ["media", id, type],
     queryFn: async () => {
       try {
-        if (!id || !type) {
-          console.error("Missing required parameters:", { id, type });
-          throw new Error("Missing required parameters");
-        }
-
-        if (type !== "movie" && type !== "tv") {
-          console.error("Invalid media type:", type);
-          throw new Error("Invalid media type");
+        if (!id) {
+          console.error("Missing ID parameter");
+          throw new Error("Missing ID parameter");
         }
 
         console.log("Fetching details for:", { type, id });
-        const result = await getMediaDetails(Number(id), type as "movie" | "tv");
+        const result = await getMediaDetails(Number(id), type);
         console.log("Fetch result:", result);
+        
+        // Update sitemap after successful fetch
+        updateSitemapEntry(result);
+        
         return result;
       } catch (error) {
         console.error("Error fetching media details:", error);
         throw error;
       }
     },
-    enabled: Boolean(id) && Boolean(type),
+    enabled: Boolean(id),
   });
 
   // Handle error state

@@ -36,7 +36,10 @@ const App = () => (
             <Navigation />
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/:type/:id" element={<Details />} />
+              {/* Media routes */}
+              <Route path="/movie/:id" element={<Details />} />
+              <Route path="/tv/:id" element={<Details />} />
+              {/* Auth routes */}
               <Route path="/login" element={<Login />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/upcoming" element={<Upcoming />} />
