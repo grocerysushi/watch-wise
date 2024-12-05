@@ -9,6 +9,7 @@ interface Season {
   id: number;
   name: string;
   air_date: string | null;
+  episode_count: number;
   episodes?: Array<{
     id: number;
     name: string;
@@ -36,46 +37,54 @@ export function MediaSeasons({ seasons }: MediaSeasonsProps) {
     return null;
   }
 
+  console.log("Seasons data:", seasons); // Add logging to debug
+
   return (
     <div className="mt-8">
       <h2 className="text-2xl font-semibold mb-4">Seasons</h2>
       <Accordion type="single" collapsible className="w-full">
-        {seasons.map((season) => (
-          <AccordionItem key={season.id} value={`season-${season.id}`}>
-            <AccordionTrigger className="text-lg">
-              {season.name} {season.air_date && `(${formatDate(season.air_date)})`}
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-4">
-                {season.episodes?.map((episode) => (
-                  <div
-                    key={episode.id}
-                    className="p-4 rounded-lg bg-muted/50"
-                  >
-                    <div className="flex justify-between items-start gap-4">
-                      <div>
-                        <h4 className="font-medium">
-                          Episode {episode.episode_number}: {episode.name}
-                        </h4>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {formatDate(episode.air_date)}
-                        </p>
+        {seasons.map((season) => {
+          console.log("Season data:", season); // Add logging for each season
+          return (
+            <AccordionItem key={season.id} value={`season-${season.id}`}>
+              <AccordionTrigger className="text-lg">
+                {season.name} {season.air_date && `(${formatDate(season.air_date)})`}
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4">
+                  {season.episodes && season.episodes.length > 0 ? (
+                    season.episodes.map((episode) => (
+                      <div
+                        key={episode.id}
+                        className="p-4 rounded-lg bg-muted/50"
+                      >
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <h4 className="font-medium">
+                              Episode {episode.episode_number}: {episode.name}
+                            </h4>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {formatDate(episode.air_date)}
+                            </p>
+                          </div>
+                        </div>
+                        {episode.overview && (
+                          <p className="text-sm mt-2">{episode.overview}</p>
+                        )}
                       </div>
-                    </div>
-                    {episode.overview && (
-                      <p className="text-sm mt-2">{episode.overview}</p>
-                    )}
-                  </div>
-                ))}
-                {(!season.episodes || season.episodes.length === 0) && (
-                  <p className="text-muted-foreground">
-                    No episode information available yet.
-                  </p>
-                )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">
+                      {season.episode_count > 0 
+                        ? "Episode information is loading..."
+                        : "No episode information available yet."}
+                    </p>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
       </Accordion>
     </div>
   );

@@ -53,8 +53,10 @@ export async function getTrending(): Promise<Media[]> {
 }
 
 export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<MediaDetails> {
+  console.log(`Fetching details for ${type} ${id}`);
+  
   const [detailsResponse, providersResponse, creditsResponse, ratingsResponse] = await Promise.all([
-    fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits`),
+    fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits,seasons`),
     fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${API_KEY}`),
     fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}`),
     fetch(`${BASE_URL}/${type}/${id}/${type === 'movie' ? 'release_dates' : 'content_ratings'}?api_key=${API_KEY}`)
@@ -66,6 +68,30 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
     creditsResponse.json(),
     ratingsResponse.json()
   ]);
+
+  // If it's a TV show, fetch episodes for each season
+  let seasons = details.seasons;
+  if (type === 'tv' && seasons) {
+    console.log('Fetching season details for TV show');
+    const seasonsWithEpisodes = await Promise.all(
+      seasons.map(async (season: any) => {
+        try {
+          const seasonResponse = await fetch(
+            `${BASE_URL}/tv/${id}/season/${season.season_number}?api_key=${API_KEY}`
+          );
+          const seasonData = await seasonResponse.json();
+          return {
+            ...season,
+            episodes: seasonData.episodes || []
+          };
+        } catch (error) {
+          console.error(`Error fetching season ${season.season_number}:`, error);
+          return season;
+        }
+      })
+    );
+    seasons = seasonsWithEpisodes;
+  }
 
   // Process content ratings
   const contentRatings = ratings.results || [];
@@ -110,7 +136,8 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
     credits,
     certification,
     aggregate_rating: aggregateRating,
-    pricing
+    pricing,
+    seasons
   };
 }
 
