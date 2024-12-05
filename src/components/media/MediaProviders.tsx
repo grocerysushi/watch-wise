@@ -1,12 +1,8 @@
+import { WatchProviders, PriceInfo } from "@/lib/types/media";
+
 interface Provider {
   provider_name: string;
   logo_path: string;
-}
-
-interface WatchProviders {
-  flatrate?: Provider[];
-  rent?: Provider[];
-  buy?: Provider[];
 }
 
 interface MediaProvidersProps {

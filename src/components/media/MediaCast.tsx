@@ -1,4 +1,4 @@
-import { CastMember, CrewMember } from "@/lib/tmdb";
+import { CastMember, CrewMember } from "@/lib/types/media";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface MediaCastProps {
