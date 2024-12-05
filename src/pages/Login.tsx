@@ -29,8 +29,8 @@ const Login = () => {
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
-          providers={[]}
           theme="dark"
+          providers={["google"]}
           redirectTo={`${window.location.origin}/`}
         />
       </div>
