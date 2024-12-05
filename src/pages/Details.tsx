@@ -16,43 +16,44 @@ const Details = () => {
   const navigate = useNavigate();
 
   // Add console logs to track the flow
-  console.log("Route params:", { type, id });
+  console.log("Details page mounted, params:", { type, id });
   
   const { data: media, isLoading, isError } = useQuery({
     queryKey: ["media", id, type],
     queryFn: async () => {
-      if (!id || !type) {
-        console.error("Missing required parameters:", { id, type });
-        throw new Error("Missing required parameters");
-      }
+      try {
+        if (!id || !type) {
+          console.error("Missing required parameters:", { id, type });
+          throw new Error("Missing required parameters");
+        }
 
-      if (type !== "movie" && type !== "tv") {
-        console.error("Invalid media type:", type);
-        throw new Error("Invalid media type");
-      }
+        if (type !== "movie" && type !== "tv") {
+          console.error("Invalid media type:", type);
+          throw new Error("Invalid media type");
+        }
 
-      console.log("Fetching details for:", { type, id });
-      const result = await getMediaDetails(Number(id), type as "movie" | "tv");
-      console.log("Fetch result:", result);
-      return result;
+        console.log("Fetching details for:", { type, id });
+        const result = await getMediaDetails(Number(id), type as "movie" | "tv");
+        console.log("Fetch result:", result);
+        return result;
+      } catch (error) {
+        console.error("Error fetching media details:", error);
+        throw error;
+      }
     },
     enabled: Boolean(id) && Boolean(type),
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    retry: 1, // Only retry once to avoid infinite loops
-    meta: {
-      onSuccess: (data) => {
-        updateSitemapEntry(data);
-      },
-    },
   });
 
+  // Handle error state
   if (isError) {
-    console.error("Error loading media details");
+    console.error("Error in Details page");
     navigate("/");
     return null;
   }
 
+  // Handle loading state
   if (isLoading || !media) {
+    console.log("Loading state in Details page");
     return <MediaLoading />;
   }
 

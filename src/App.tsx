@@ -13,7 +13,17 @@ import Login from "./pages/Login";
 import Favorites from "./pages/Favorites";
 import Upcoming from "./pages/Upcoming";
 
-const queryClient = new QueryClient();
+// Configure the query client with default options
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -30,6 +40,7 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/upcoming" element={<Upcoming />} />
+              {/* Catch all route - must be last */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
