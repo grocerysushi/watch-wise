@@ -97,4 +97,5 @@ export interface MediaDetails extends Media {
     worstRating: number;
   };
   pricing?: PriceInfo[];
+  similar?: Media[];
 }

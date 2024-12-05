@@ -3,6 +3,7 @@ import { MediaSeasons } from "@/components/media/MediaSeasons";
 import { MediaProviders } from "@/components/media/MediaProviders";
 import { MediaHeader } from "@/components/media/MediaHeader";
 import { MediaCast } from "@/components/media/MediaCast";
+import { MediaRelated } from "@/components/media/MediaRelated";
 import { MediaDetails } from "@/lib/tmdb";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
@@ -22,8 +23,6 @@ export function MediaContent({
   favorite, 
   onFavoriteClick 
 }: MediaContentProps) {
-  const directors = media.credits.crew.filter(crew => crew.job === "Director");
-  
   return (
     <div className="animate-fade-up space-y-8">
       <MediaHeader
@@ -54,7 +53,7 @@ export function MediaContent({
         )}
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         <MediaOverview
           overview={media.overview}
           runtime={media.runtime}
@@ -64,13 +63,20 @@ export function MediaContent({
         
         {media.credits && (
           <MediaCast
-            cast={media.credits.cast.slice(0, 10)}
-            directors={directors}
+            cast={media.credits.cast}
+            crew={media.credits.crew}
           />
         )}
         
         {media.media_type === "tv" && media.seasons && (
           <MediaSeasons seasons={media.seasons} />
+        )}
+
+        {media.similar && (
+          <MediaRelated 
+            media={media.similar} 
+            title={title}
+          />
         )}
       </div>
 
