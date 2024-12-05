@@ -13,12 +13,11 @@ export default defineConfig({
     port: 8080,
     host: "::",
     proxy: {
-      // Redirect all 404s to index.html for SPA routing
-      '*': {
+      // Redirect all non-asset requests to index.html for SPA routing
+      '^(?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)).*$': {
         target: '/',
         bypass: (req) => {
-          // Return index.html for all non-asset requests
-          if (req.url && !req.url.includes('.')) {
+          if (req.url) {
             return '/index.html';
           }
         },
