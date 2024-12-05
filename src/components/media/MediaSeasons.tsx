@@ -8,12 +8,12 @@ import {
 interface Season {
   id: number;
   name: string;
-  air_date: string;
+  air_date: string | null;
   episodes?: Array<{
     id: number;
     name: string;
     episode_number: number;
-    air_date: string;
+    air_date: string | null;
     overview: string;
   }>;
 }
@@ -23,13 +23,18 @@ interface MediaSeasonsProps {
 }
 
 export function MediaSeasons({ seasons }: MediaSeasonsProps) {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return "TBA";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
   };
+
+  if (!seasons || seasons.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mt-8">
@@ -38,7 +43,7 @@ export function MediaSeasons({ seasons }: MediaSeasonsProps) {
         {seasons.map((season) => (
           <AccordionItem key={season.id} value={`season-${season.id}`}>
             <AccordionTrigger className="text-lg">
-              {season.name} ({formatDate(season.air_date)})
+              {season.name} {season.air_date && `(${formatDate(season.air_date)})`}
             </AccordionTrigger>
             <AccordionContent>
               <div className="space-y-4">
@@ -57,9 +62,16 @@ export function MediaSeasons({ seasons }: MediaSeasonsProps) {
                         </p>
                       </div>
                     </div>
-                    <p className="text-sm mt-2">{episode.overview}</p>
+                    {episode.overview && (
+                      <p className="text-sm mt-2">{episode.overview}</p>
+                    )}
                   </div>
                 ))}
+                {(!season.episodes || season.episodes.length === 0) && (
+                  <p className="text-muted-foreground">
+                    No episode information available yet.
+                  </p>
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>
