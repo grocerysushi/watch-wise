@@ -3,7 +3,6 @@ import { MediaSeasons } from "@/components/media/MediaSeasons";
 import { MediaProviders } from "@/components/media/MediaProviders";
 import { MediaHeader } from "@/components/media/MediaHeader";
 import { MediaCast } from "@/components/media/MediaCast";
-import { MediaRelated } from "@/components/media/MediaRelated";
 import { MediaDetails } from "@/lib/tmdb";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
@@ -69,13 +68,6 @@ export function MediaContent({
           <MediaCast
             cast={media.credits.cast}
             crew={media.credits.crew}
-          />
-        )}
-        
-        {media.similar && (
-          <MediaRelated 
-            media={media.similar} 
-            title={title}
           />
         )}
       </div>
