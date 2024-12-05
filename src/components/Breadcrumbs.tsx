@@ -39,7 +39,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
       <Breadcrumb className="mb-4">
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink as={Link} to="/">Home</BreadcrumbLink>
+            <Link to="/" className="transition-colors hover:text-foreground">Home</Link>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           {items.map((item, index) => (
@@ -48,9 +48,9 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                 <BreadcrumbPage>{item.label}</BreadcrumbPage>
               ) : (
                 <>
-                  <BreadcrumbLink as={Link} to={item.href || "#"}>
+                  <Link to={item.href || "#"} className="transition-colors hover:text-foreground">
                     {item.label}
-                  </BreadcrumbLink>
+                  </Link>
                   <BreadcrumbSeparator />
                 </>
               )}

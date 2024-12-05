@@ -18,9 +18,11 @@ const Details = () => {
     queryKey: ["media", id, type],
     queryFn: () => getMediaDetails(Number(id), type as "movie" | "tv"),
     enabled: !!id && !!type,
-    onSuccess: (data) => {
-      // Update sitemap when new media is viewed
-      updateSitemapEntry(data);
+    meta: {
+      onSuccess: (data) => {
+        // Update sitemap when new media is viewed
+        updateSitemapEntry(data);
+      },
     },
   });
 
