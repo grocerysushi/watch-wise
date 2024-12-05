@@ -26,7 +26,7 @@ const Details = () => {
 
   const title = media.title || media.name;
   const date = media.release_date || media.first_air_date;
-  const year = date ? new Date(date).getFullYear() : "";
+  const year = date ? new Date(date).getFullYear().toString() : ""; // Convert to string explicitly
   const favorite = isFavorite(media.id, media.media_type);
 
   const handleFavoriteClick = () => {
@@ -52,7 +52,7 @@ const Details = () => {
         <MediaContent
           media={media}
           title={title}
-          year={year.toString()}
+          year={year}
           favorite={favorite}
           onFavoriteClick={handleFavoriteClick}
         />
