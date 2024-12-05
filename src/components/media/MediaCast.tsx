@@ -31,10 +31,10 @@ export function MediaCast({ cast, crew }: MediaCastProps) {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Cast</h3>
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex space-x-4 pb-4">
+          <div className="flex w-max space-x-6 pb-4">
             {cast.map((actor) => (
-              <div key={actor.id} className="w-[150px] space-y-3">
-                <Avatar className="h-[150px] w-[150px] rounded-lg">
+              <div key={actor.id} className="w-[160px] space-y-3">
+                <Avatar className="h-[160px] w-[160px] rounded-lg">
                   {actor.profile_path ? (
                     <AvatarImage 
                       src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`} 
@@ -47,9 +47,9 @@ export function MediaCast({ cast, crew }: MediaCastProps) {
                     </AvatarFallback>
                   )}
                 </Avatar>
-                <div className="space-y-1">
-                  <p className="font-medium leading-none">{actor.name}</p>
-                  <p className="text-sm text-muted-foreground">{actor.character}</p>
+                <div className="space-y-1.5">
+                  <p className="font-medium leading-tight line-clamp-2 min-h-[2.5rem]">{actor.name}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">{actor.character}</p>
                 </div>
               </div>
             ))}
@@ -82,7 +82,7 @@ export function MediaCast({ cast, crew }: MediaCastProps) {
                         )}
                       </Avatar>
                       <div>
-                        <p className="font-medium leading-none">{member.name}</p>
+                        <p className="font-medium leading-tight">{member.name}</p>
                         <p className="text-sm text-muted-foreground">{member.job}</p>
                       </div>
                     </div>
