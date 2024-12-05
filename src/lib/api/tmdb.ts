@@ -1,4 +1,4 @@
-import { Media, MediaDetails } from '../types/media';
+import { Media, MediaDetails, PriceInfo } from '../types/media';
 
 const API_KEY = "0516f25de82267acf54e3dd3fc372307";
 const BASE_URL = "https://api.themoviedb.org/3";
