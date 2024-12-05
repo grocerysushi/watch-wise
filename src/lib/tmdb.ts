@@ -48,9 +48,36 @@ interface Season {
   episodes?: Episode[];
 }
 
+interface Genre {
+  id: number;
+  name: string;
+}
+
+interface CastMember {
+  id: number;
+  name: string;
+  character: string;
+  profile_path?: string;
+}
+
+interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  department: string;
+}
+
+interface Credits {
+  cast: CastMember[];
+  crew: CrewMember[];
+}
+
 export interface MediaDetails extends Media {
   watch_providers?: WatchProviders;
   seasons?: Season[];
+  vote_count: number;
+  genres: Genre[];
+  credits: Credits;
 }
 
 export async function searchMedia(query: string): Promise<Media[]> {
