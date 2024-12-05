@@ -55,6 +55,22 @@ const Index = () => {
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "https://www.cueious.net/",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://www.cueious.net/search?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
+        <link rel="canonical" href="https://www.cueious.net/" />
       </Helmet>
       
       <main className="container min-h-screen pt-24 pb-8 animate-fade-up">

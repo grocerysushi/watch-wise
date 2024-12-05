@@ -6,6 +6,8 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { MediaContent } from "@/components/media/MediaContent";
 import { MediaLoading } from "@/components/media/MediaLoading";
 import { MediaSEO } from "@/components/media/MediaSEO";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { updateSitemapEntry } from "@/lib/seo";
 
 const Details = () => {
   const { type, id } = useParams();
@@ -16,6 +18,10 @@ const Details = () => {
     queryKey: ["media", id, type],
     queryFn: () => getMediaDetails(Number(id), type as "movie" | "tv"),
     enabled: !!id && !!type,
+    onSuccess: (data) => {
+      // Update sitemap when new media is viewed
+      updateSitemapEntry(data);
+    },
   });
 
   if (isLoading) {
@@ -26,8 +32,19 @@ const Details = () => {
 
   const title = media.title || media.name;
   const date = media.release_date || media.first_air_date;
-  const year = date ? new Date(date).getFullYear().toString() : ""; // Convert to string explicitly
+  const year = date ? new Date(date).getFullYear().toString() : "";
   const favorite = isFavorite(media.id, media.media_type);
+
+  const breadcrumbItems = [
+    {
+      label: media.media_type === "movie" ? "Movies" : "TV Shows",
+      href: `/${media.media_type}s`
+    },
+    {
+      label: title,
+      href: `/${media.media_type}/${media.id}`
+    }
+  ];
 
   const handleFavoriteClick = () => {
     if (!user) {
@@ -49,6 +66,7 @@ const Details = () => {
       />
 
       <div className="container min-h-screen pt-24 pb-8 animate-fade-up">
+        <Breadcrumbs items={breadcrumbItems} />
         <MediaContent
           media={media}
           title={title}

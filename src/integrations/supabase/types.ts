@@ -66,6 +66,36 @@ export type Database = {
         }
         Relationships: []
       }
+      sitemap_entries: {
+        Row: {
+          change_freq: string | null
+          id: string
+          last_modified: string | null
+          media_id: number | null
+          media_type: string | null
+          priority: number | null
+          url: string
+        }
+        Insert: {
+          change_freq?: string | null
+          id?: string
+          last_modified?: string | null
+          media_id?: number | null
+          media_type?: string | null
+          priority?: number | null
+          url: string
+        }
+        Update: {
+          change_freq?: string | null
+          id?: string
+          last_modified?: string | null
+          media_id?: number | null
+          media_type?: string | null
+          priority?: number | null
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
