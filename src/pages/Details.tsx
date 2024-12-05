@@ -14,21 +14,33 @@ const Details = () => {
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
   const navigate = useNavigate();
+
+  // Add console logs to track the flow
+  console.log("Route params:", { type, id });
   
   const { data: media, isLoading, isError } = useQuery({
     queryKey: ["media", id, type],
-    queryFn: () => {
-      if (!id || !type || (type !== "movie" && type !== "tv")) {
-        throw new Error("Invalid media type or ID");
+    queryFn: async () => {
+      if (!id || !type) {
+        console.error("Missing required parameters:", { id, type });
+        throw new Error("Missing required parameters");
       }
-      console.log("Fetching details for:", type, id);
-      return getMediaDetails(Number(id), type as "movie" | "tv");
+
+      if (type !== "movie" && type !== "tv") {
+        console.error("Invalid media type:", type);
+        throw new Error("Invalid media type");
+      }
+
+      console.log("Fetching details for:", { type, id });
+      const result = await getMediaDetails(Number(id), type as "movie" | "tv");
+      console.log("Fetch result:", result);
+      return result;
     },
-    enabled: !!id && !!type,
+    enabled: Boolean(id) && Boolean(type),
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    retry: 1, // Only retry once to avoid infinite loops
     meta: {
       onSuccess: (data) => {
-        // Update sitemap when new media is viewed
         updateSitemapEntry(data);
       },
     },
