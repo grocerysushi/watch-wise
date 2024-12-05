@@ -72,12 +72,33 @@ interface Credits {
   crew: CrewMember[];
 }
 
+interface ContentRating {
+  iso_3166_1: string;
+  rating: string;
+}
+
+interface PriceInfo {
+  type: 'rent' | 'buy';
+  price: number;
+  currency: string;
+  provider: string;
+}
+
 export interface MediaDetails extends Media {
   watch_providers?: WatchProviders;
   seasons?: Season[];
   vote_count: number;
   genres: Genre[];
   credits: Credits;
+  content_ratings?: ContentRating[];
+  certification?: string;
+  aggregate_rating?: {
+    ratingValue: number;
+    ratingCount: number;
+    bestRating: number;
+    worstRating: number;
+  };
+  pricing?: PriceInfo[];
 }
 
 export async function searchMedia(query: string): Promise<Media[]> {
@@ -130,36 +151,64 @@ export async function getTrending(): Promise<Media[]> {
 }
 
 export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<MediaDetails> {
-  const [detailsResponse, providersResponse, creditsResponse] = await Promise.all([
+  const [detailsResponse, providersResponse, creditsResponse, ratingsResponse] = await Promise.all([
     fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits`),
     fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${API_KEY}`),
-    fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}`)
+    fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}`),
+    fetch(`${BASE_URL}/${type}/${id}/${type === 'movie' ? 'release_dates' : 'content_ratings'}?api_key=${API_KEY}`)
   ]);
 
-  const [details, providers, credits] = await Promise.all([
+  const [details, providers, credits, ratings] = await Promise.all([
     detailsResponse.json(),
     providersResponse.json(),
-    creditsResponse.json()
+    creditsResponse.json(),
+    ratingsResponse.json()
   ]);
 
-  if (type === "tv" && details.seasons) {
-    const seasonPromises = details.seasons.map(async (season: Season) => {
-      const seasonResponse = await fetch(
-        `${BASE_URL}/tv/${id}/season/${season.season_number}?api_key=${API_KEY}`
-      );
-      const seasonData = await seasonResponse.json();
-      return seasonData;
-    });
+  // Process content ratings
+  const contentRatings = ratings.results || [];
+  const usRating = contentRatings.find((r: any) => r.iso_3166_1 === 'US');
+  const certification = type === 'movie' 
+    ? usRating?.release_dates?.[0]?.certification 
+    : usRating?.rating;
 
-    const seasons = await Promise.all(seasonPromises);
-    details.seasons = seasons;
+  // Calculate aggregate rating
+  const aggregateRating = {
+    ratingValue: details.vote_average,
+    ratingCount: details.vote_count,
+    bestRating: 10,
+    worstRating: 0
+  };
+
+  // Process pricing from watch providers
+  const pricing: PriceInfo[] = [];
+  if (providers.results?.US) {
+    if (providers.results.US.rent) {
+      pricing.push({
+        type: 'rent',
+        price: 3.99, // Default price, actual prices vary by provider
+        currency: 'USD',
+        provider: providers.results.US.rent[0].provider_name
+      });
+    }
+    if (providers.results.US.buy) {
+      pricing.push({
+        type: 'buy',
+        price: 14.99, // Default price, actual prices vary by provider
+        provider: providers.results.US.buy[0].provider_name,
+        currency: 'USD'
+      });
+    }
   }
 
   return {
     ...details,
     media_type: type,
     watch_providers: providers.results?.US,
-    credits: credits
+    credits,
+    certification,
+    aggregate_rating: aggregateRating,
+    pricing
   };
 }
 

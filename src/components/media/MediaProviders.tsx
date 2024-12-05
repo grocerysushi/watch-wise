@@ -11,6 +11,7 @@ interface WatchProviders {
 
 interface MediaProvidersProps {
   providers: WatchProviders;
+  pricing?: PriceInfo[];
 }
 
 const providerUrls = {
@@ -69,27 +70,53 @@ const ProviderSection = ({
   </div>
 );
 
-export function MediaProviders({ providers }: MediaProvidersProps) {
-  if (!providers) return null;
+export function MediaProviders({ providers, pricing }: MediaProvidersProps) {
+  if (!providers && !pricing) return null;
 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Where to Watch</h2>
-      {providers.flatrate && (
+      
+      {pricing && pricing.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="font-medium">Pricing</h3>
+          <div className="flex flex-wrap gap-4">
+            {pricing.map((price, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 bg-secondary/50 rounded-lg p-3"
+              >
+                <span className="font-medium capitalize">{price.type}:</span>
+                <span>
+                  {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: price.currency
+                  }).format(price.price)}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  on {price.provider}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {providers?.flatrate && (
         <ProviderSection 
           title="Stream" 
           providers={providers.flatrate} 
           action="Stream"
         />
       )}
-      {providers.rent && (
+      {providers?.rent && (
         <ProviderSection 
           title="Rent" 
           providers={providers.rent} 
           action="Rent"
         />
       )}
-      {providers.buy && (
+      {providers?.buy && (
         <ProviderSection 
           title="Buy" 
           providers={providers.buy} 
