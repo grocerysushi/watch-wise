@@ -10,11 +10,22 @@ export default defineConfig({
     },
   },
   server: {
-    // Handle client-side routing
-    historyApiFallback: true,
+    port: 8080,
+    host: "::",
+    proxy: {
+      // Redirect all 404s to index.html for SPA routing
+      '*': {
+        target: '/',
+        bypass: (req) => {
+          // Return index.html for all non-asset requests
+          if (!req.url.includes('.')) {
+            return '/index.html';
+          }
+        },
+      },
+    },
   },
   preview: {
-    // Handle client-side routing in preview mode
-    historyApiFallback: true,
+    port: 8080,
   },
 });
