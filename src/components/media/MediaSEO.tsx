@@ -8,88 +8,55 @@ interface MediaSEOProps {
 }
 
 export function MediaSEO({ media, title, year }: MediaSEOProps) {
-  // Meta tags for social sharing and SEO
   const metaTags = {
     title: `${title} (${year}) - Watch Now | Cueious`,
-    description: `Watch ${title} on ${media.watch_providers?.flatrate?.map(p => p.provider_name).join(", ") || "streaming services"}. ${media.overview?.slice(0, 150)}...`,
+    description: `Watch ${title} on ${media.watch_providers?.flatrate?.map(p => p.name).join(", ") || "streaming services"}. ${media.overview?.slice(0, 150)}...`,
     image: `https://image.tmdb.org/t/p/original${media.backdrop_path || media.poster_path}`,
-    url: `https://www.cueious.net/${media.media_type}/${media.id}`
-  };
-
-  // Create structured data for the movie/TV show
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": media.media_type === "movie" ? "Movie" : "TVSeries",
-    "name": title,
-    "datePublished": media.release_date || media.first_air_date,
-    "description": media.overview,
-    "image": `https://image.tmdb.org/t/p/original${media.poster_path}`,
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": media.vote_average,
-      "bestRating": "10",
-      "ratingCount": media.vote_count
-    },
-    "potentialAction": {
-      "@type": "WatchAction",
-      "target": media.watch_providers?.flatrate?.map(provider => ({
-        "@type": "EntryPoint",
-        "urlTemplate": `https://www.google.com/search?q=watch+${encodeURIComponent(title)}+on+${encodeURIComponent(provider.provider_name)}`,
-        "actionPlatform": [
-          "http://schema.org/DesktopWebPlatform",
-          "http://schema.org/MobileWebPlatform",
-          "http://schema.org/IOSPlatform",
-          "http://schema.org/AndroidPlatform"
-        ]
-      }))
-    },
-    "duration": media.runtime ? `PT${media.runtime}M` : undefined,
-    "numberOfEpisodes": media.number_of_episodes,
-    "numberOfSeasons": media.number_of_seasons,
-    "contentRating": media.certification,
-    "genre": media.genres?.map(genre => genre.name),
-    "actor": media.credits?.cast?.slice(0, 5)?.map(actor => ({
-      "@type": "Person",
-      "name": actor.name
-    })),
-    "director": media.credits?.crew?.filter(crew => crew.job === "Director")?.map(director => ({
-      "@type": "Person",
-      "name": director.name
-    })),
-    "provider": media.watch_providers?.flatrate?.map(provider => ({
-      "@type": "Organization",
-      "name": provider.provider_name,
-      "logo": `https://image.tmdb.org/t/p/original${provider.logo_path}`
-    }))
+    url: `https://www.cueious.net/${media.media_type}/${media.id}`,
+    keywords: `${title}, ${year}, ${media.media_type}, ${media.genres?.map(g => g.name).join(", ")}, watch online, streaming, movie review, TV series, entertainment, ${media.watch_providers?.flatrate?.map(p => p.provider_name).join(", ")}`
   };
 
   return (
     <Helmet>
+      <html lang="en" />
       <title>{metaTags.title}</title>
       <meta name="description" content={metaTags.description} />
+      <meta name="keywords" content={metaTags.keywords} />
+      <meta name="language" content="English" />
       
       {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={media.media_type === "movie" ? "video.movie" : "video.tv_show"} />
       <meta property="og:url" content={metaTags.url} />
       <meta property="og:title" content={metaTags.title} />
       <meta property="og:description" content={metaTags.description} />
       <meta property="og:image" content={metaTags.image} />
-
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:site_name" content="Cueious" />
+      <meta property="og:locale" content="en_US" />
+      <meta property="og:video:release_date" content={media.release_date || media.first_air_date} />
+      
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content="@cueious" />
+      <meta name="twitter:creator" content="@cueious" />
       <meta name="twitter:url" content={metaTags.url} />
       <meta name="twitter:title" content={metaTags.title} />
       <meta name="twitter:description" content={metaTags.description} />
       <meta name="twitter:image" content={metaTags.image} />
+      <meta name="twitter:image:alt" content={`${title} poster`} />
+      <meta name="twitter:label1" content="Available on" />
+      <meta name="twitter:data1" content={media.watch_providers?.flatrate?.map(p => p.provider_name).join(", ") || "Streaming Services"} />
+      <meta name="twitter:label2" content="Genre" />
+      <meta name="twitter:data2" content={media.genres?.map(g => g.name).join(", ")} />
+
+      {/* Canonical URL */}
+      <link rel="canonical" href={metaTags.url} />
 
       {/* Schema.org structured data */}
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}
       </script>
-
-      {/* Additional SEO meta tags */}
-      <link rel="canonical" href={metaTags.url} />
-      <meta name="keywords" content={`${title}, ${year}, watch ${title}, stream ${title}, ${media.media_type}, ${media.genres?.map(g => g.name).join(", ")}, streaming, where to watch`} />
     </Helmet>
   );
 }
