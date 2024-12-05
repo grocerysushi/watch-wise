@@ -8,7 +8,7 @@ export function NavTitle() {
         <Image 
           src="/lovable-uploads/a89e392b-ac7d-4556-8f41-b064ab664e62.png"
           alt="Cueious Logo"
-          className="h-16 w-16"
+          className="h-16 w-16 transition-transform duration-300 hover:scale-125"
         />
       </div>
     </div>
