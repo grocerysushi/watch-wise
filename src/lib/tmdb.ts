@@ -103,13 +103,17 @@ export async function getTrending(): Promise<Media[]> {
 }
 
 export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<MediaDetails> {
-  const [detailsResponse, providersResponse] = await Promise.all([
-    fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}`),
-    fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${API_KEY}`)
+  const [detailsResponse, providersResponse, creditsResponse] = await Promise.all([
+    fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits`),
+    fetch(`${BASE_URL}/${type}/${id}/watch/providers?api_key=${API_KEY}`),
+    fetch(`${BASE_URL}/${type}/${id}/credits?api_key=${API_KEY}`)
   ]);
 
-  const details = await detailsResponse.json();
-  const providers = await providersResponse.json();
+  const [details, providers, credits] = await Promise.all([
+    detailsResponse.json(),
+    providersResponse.json(),
+    creditsResponse.json()
+  ]);
 
   if (type === "tv" && details.seasons) {
     const seasonPromises = details.seasons.map(async (season: Season) => {
@@ -127,7 +131,8 @@ export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise
   return {
     ...details,
     media_type: type,
-    watch_providers: providers.results?.US
+    watch_providers: providers.results?.US,
+    credits: credits
   };
 }
 
