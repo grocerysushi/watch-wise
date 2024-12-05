@@ -61,6 +61,10 @@ export function MediaContent({
           numberOfEpisodes={media.number_of_episodes}
         />
         
+        {media.media_type === "tv" && media.seasons && (
+          <MediaSeasons seasons={media.seasons} />
+        )}
+
         {media.credits && (
           <MediaCast
             cast={media.credits.cast}
@@ -68,10 +72,6 @@ export function MediaContent({
           />
         )}
         
-        {media.media_type === "tv" && media.seasons && (
-          <MediaSeasons seasons={media.seasons} />
-        )}
-
         {media.similar && (
           <MediaRelated 
             media={media.similar} 
