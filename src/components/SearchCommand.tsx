@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchMedia } from "@/lib/api/tmdbCommon";
 import { Media } from "@/lib/types/media";
+import { DialogTitle } from "@/components/ui/dialog";
 
 let showSearchCommand: (() => void) | null = null;
 
@@ -56,6 +57,7 @@ export function SearchCommand() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
+      <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
       <CommandInput 
         placeholder="Search movies & TV shows..." 
         value={query}
