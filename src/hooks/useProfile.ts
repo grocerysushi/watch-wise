@@ -31,8 +31,8 @@ export function useProfile() {
     },
     enabled: !!user,
     retry: false,
-    // Don't show error in UI
-    useErrorBoundary: false,
+    // Use throwOnError instead of useErrorBoundary
+    throwOnError: false
   });
 
   const updateProfile = useMutation({
