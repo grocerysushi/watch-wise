@@ -43,9 +43,12 @@ export function SearchCommand() {
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
-    queryFn: () => {
+    queryFn: async () => {
       console.log("Searching for:", query);
-      return searchMedia(query);
+      if (!query) return [];
+      const data = await searchMedia(query);
+      console.log("Search API response:", data);
+      return data;
     },
     enabled: query.length > 0,
   });
