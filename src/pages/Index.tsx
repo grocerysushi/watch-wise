@@ -14,8 +14,24 @@ const Index = () => {
 
   const { profile } = useProfile();
 
-  // Create structured data for the trending movies/shows
+  // Enhanced structured data for better SEO
   const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Cueious - Movie and TV Show Discovery",
+    "alternateName": "Cueious",
+    "url": "https://www.cueious.net",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.cueious.net/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  };
+
+  const trendingListData = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     "itemListElement": trending?.map((item, index) => ({
@@ -28,49 +44,44 @@ const Index = () => {
     })) || []
   };
 
-  const LoadingSkeleton = () => (
-    <div 
-      className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-      aria-hidden="true"
-      role="presentation"
-      tabIndex={-1}
-    >
-      {Array.from({ length: 10 }).map((_, i) => (
-        <div 
-          key={i} 
-          className="space-y-3"
-          aria-hidden="true"
-        >
-          <Skeleton className="aspect-[2/3] w-full rounded-lg" />
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-1/2" />
-        </div>
-      ))}
-    </div>
-  );
+  const organizationData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cueious",
+    "url": "https://www.cueious.net",
+    "logo": "https://www.cueious.net/lovable-uploads/a89e392b-ac7d-4556-8f41-b064ab664e62.png",
+    "sameAs": [
+      "https://twitter.com/cueious",
+      // Add other social media links when available
+    ]
+  };
 
   return (
     <>
       <Helmet>
+        <title>Cueious - Best Movie & TV Show Tracker | Discover What to Watch Next</title>
+        <meta name="description" content="Discover the best movies and TV shows to watch. Track what you've watched, create watchlists, and get personalized recommendations. Join millions of users on Cueious today!" />
+        <meta name="keywords" content="movie tracker, TV show tracker, what to watch, movie recommendations, TV series recommendations, streaming guide, entertainment tracker, watchlist, movie database, TV show database" />
+        
+        {/* Open Graph tags for better social sharing */}
+        <meta property="og:title" content="Cueious - Your Ultimate Movie & TV Show Companion" />
+        <meta property="og:description" content="Track, discover, and never miss great entertainment. Get personalized movie and TV show recommendations based on what you love." />
+        
+        {/* Twitter Card tags */}
+        <meta name="twitter:title" content="Cueious - Best Movie & TV Show Discovery Platform" />
+        <meta name="twitter:description" content="Your personal entertainment guide. Track what you watch, discover new content, and never miss great shows and movies." />
+        
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
         <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "url": "https://www.cueious.net/",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": "https://www.cueious.net/search?q={search_term_string}"
-              },
-              "query-input": "required name=search_term_string"
-            }
-          })}
+          {JSON.stringify(trendingListData)}
         </script>
-        <link rel="canonical" href="https://www.cueious.net/" />
+        <script type="application/ld+json">
+          {JSON.stringify(organizationData)}
+        </script>
+        
+        <link rel="canonical" href="https://www.cueious.net" />
       </Helmet>
       
       <main className="container min-h-screen pt-24 pb-8 animate-fade-up">
@@ -89,7 +100,14 @@ const Index = () => {
             aria-label="Trending movies and TV shows"
           >
             {isLoading ? (
-              <LoadingSkeleton />
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-[2/3] animate-pulse rounded-lg bg-muted"
+                  />
+                ))}
+              </div>
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {trending?.map((media) => (
