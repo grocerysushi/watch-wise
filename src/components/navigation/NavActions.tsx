@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { SearchButton } from "@/components/search/SearchButton";
-import { Link, useNavigate } from "react-router-dom";
-import { Heart, LogIn, LogOut, Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
+import { LogIn, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -17,7 +17,6 @@ interface NavActionsProps {
 
 export function NavActions({ onSearchClick }: NavActionsProps) {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -25,43 +24,20 @@ export function NavActions({ onSearchClick }: NavActionsProps) {
       toast.error("Error logging out");
       return;
     }
-    navigate("/");
   };
 
   return (
     <div className="flex flex-1 items-center justify-end gap-2">
       <SearchButton onClick={onSearchClick} />
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" asChild>
-            <Link to="/upcoming">
-              <Calendar className="h-5 w-5" />
-            </Link>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Upcoming</TooltipContent>
-      </Tooltip>
       {user ? (
-        <>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" asChild>
-                <Link to="/favorites">
-                  <Heart className="h-5 w-5" />
-                </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Favorites</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Logout</TooltipContent>
-          </Tooltip>
-        </>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Logout</TooltipContent>
+        </Tooltip>
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>
