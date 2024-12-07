@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getMediaDetails } from "@/lib/tmdb";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useWatched } from "@/hooks/useWatched";
 import { MediaContent } from "@/components/media/MediaContent";
 import { MediaLoading } from "@/components/media/MediaLoading";
 import { MediaSEO } from "@/components/media/MediaSEO";
@@ -62,6 +63,8 @@ const Details = () => {
   const date = media.release_date || media.first_air_date;
   const year = date ? new Date(date).getFullYear().toString() : "";
   const favorite = isFavorite(media.id, media.media_type);
+  const { toggleWatched, isWatched } = useWatched();
+  const watched = isWatched(Number(id), type);
 
   const breadcrumbItems = [
     {
@@ -85,6 +88,17 @@ const Details = () => {
     });
   };
 
+  const handleWatchedClick = () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    toggleWatched.mutate({
+      mediaId: Number(id),
+      mediaType: type,
+    });
+  };
+
   return (
     <>
       <MediaSEO 
@@ -100,7 +114,9 @@ const Details = () => {
           title={title}
           year={year}
           favorite={favorite}
+          watched={watched}
           onFavoriteClick={handleFavoriteClick}
+          onWatchedClick={handleWatchedClick}
         />
       </div>
     </>

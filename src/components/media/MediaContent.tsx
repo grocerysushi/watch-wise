@@ -13,15 +13,19 @@ interface MediaContentProps {
   title: string;
   year: string;
   favorite: boolean;
+  watched: boolean;
   onFavoriteClick: () => void;
+  onWatchedClick: () => void;
 }
 
 export function MediaContent({ 
   media, 
   title, 
   year, 
-  favorite, 
-  onFavoriteClick 
+  favorite,
+  watched,
+  onFavoriteClick,
+  onWatchedClick
 }: MediaContentProps) {
   return (
     <div className="animate-fade-up space-y-8">
@@ -31,7 +35,9 @@ export function MediaContent({
         status={media.status}
         backdropPath={media.backdrop_path}
         onFavoriteClick={onFavoriteClick}
+        onWatchedClick={onWatchedClick}
         isFavorite={favorite}
+        isWatched={watched}
       />
 
       <div className="flex flex-wrap gap-4 items-center">
