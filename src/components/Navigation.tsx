@@ -20,7 +20,7 @@ export function Navigation() {
       <Button
         variant="ghost"
         size="icon"
-        onClick={openSearch}
+        onClick={() => openSearch()}
         aria-label="Search"
         className="focus-visible:ring-2 focus-visible:ring-offset-2"
       >

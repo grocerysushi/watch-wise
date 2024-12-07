@@ -9,7 +9,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchMedia } from "@/lib/api/tmdbCommon";
 import { Media } from "@/lib/types/media";
@@ -27,8 +27,12 @@ export function SearchCommand() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  // Store the setOpen function in our module-level variable
-  showSearchCommand = () => setOpen(true);
+  useEffect(() => {
+    showSearchCommand = () => setOpen(true);
+    return () => {
+      showSearchCommand = null;
+    };
+  }, []);
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
