@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import {
   CommandDialog,
   CommandEmpty,
@@ -36,16 +37,9 @@ export function SearchCommand() {
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
-    queryFn: () => {
-      console.log("Making search query for:", query);
-      return searchMedia(query);
-    },
+    queryFn: () => searchMedia(query),
     enabled: query.length > 0,
   });
-
-  console.log("Current query:", query);
-  console.log("Search results:", results);
-  console.log("Is loading:", isLoading);
 
   const handleSelect = (mediaType: string, id: number, title: string) => {
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -86,7 +80,7 @@ export function SearchCommand() {
             </CommandItem>
           </CommandGroup>
         ) : null}
-        {query.length > 0 && !isLoading && results && (
+        {query.length > 0 && !isLoading && results && results.length > 0 && (
           <CommandGroup heading="Search Results">
             {results.map((item: Media) => (
               <CommandItem
