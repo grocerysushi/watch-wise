@@ -47,13 +47,27 @@ export function SearchCommand() {
       console.log("Searching for:", query);
       if (!query) return [];
       try {
-        const data = await searchMedia(query);
-        console.log("Search API response:", data);
-        if (!data) {
-          console.warn("No data returned from search");
+        const response = await searchMedia(query);
+        console.log("Raw API response:", response);
+        
+        if (!response || !Array.isArray(response)) {
+          console.warn("Invalid response format:", response);
           return [];
         }
-        return data;
+        
+        // Map the response to ensure we have the correct properties
+        const mappedResults = response.map((item: any) => ({
+          id: item.id,
+          media_type: item.media_type,
+          title: item.title || item.name,
+          name: item.name,
+          poster_path: item.poster_path,
+          release_date: item.release_date,
+          first_air_date: item.first_air_date
+        }));
+        
+        console.log("Mapped results:", mappedResults);
+        return mappedResults;
       } catch (error) {
         console.error("Search error:", error);
         return [];
