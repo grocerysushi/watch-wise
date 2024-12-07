@@ -15,27 +15,30 @@ const Details = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { toggleWatched, isWatched } = useWatched();
   
   // Determine media type from URL
   const type = window.location.pathname.includes('/tv/') ? 'tv' : 'movie';
   
   console.log("Details page mounted, params:", { type, id });
   
-  const { data: media, isLoading, isError } = useQuery({
+  const { data: media, isLoading, isError, error } = useQuery({
     queryKey: ["media", id, type],
     queryFn: async () => {
-      try {
-        if (!id) {
-          console.error("Missing ID parameter");
-          throw new Error("Missing ID parameter");
-        }
+      if (!id) {
+        console.error("Missing ID parameter");
+        throw new Error("Missing ID parameter");
+      }
 
-        console.log("Fetching details for:", { type, id });
+      console.log("Fetching details for:", { type, id });
+      try {
         const result = await getMediaDetails(Number(id), type);
         console.log("Fetch result:", result);
         
         // Update sitemap after successful fetch
-        updateSitemapEntry(result);
+        if (result) {
+          updateSitemapEntry(result).catch(console.error);
+        }
         
         return result;
       } catch (error) {
@@ -44,13 +47,28 @@ const Details = () => {
       }
     },
     enabled: Boolean(id),
+    retry: 1,
   });
 
   // Handle error state
   if (isError) {
-    console.error("Error in Details page");
-    navigate("/");
-    return null;
+    console.error("Error in Details page:", error);
+    return (
+      <div className="container min-h-screen pt-24 pb-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">Error Loading Content</h1>
+          <p className="mt-2 text-muted-foreground">
+            Unable to load the content. Please try again later.
+          </p>
+          <button 
+            onClick={() => navigate("/")}
+            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // Handle loading state
@@ -63,7 +81,6 @@ const Details = () => {
   const date = media.release_date || media.first_air_date;
   const year = date ? new Date(date).getFullYear().toString() : "";
   const favorite = isFavorite(media.id, media.media_type);
-  const { toggleWatched, isWatched } = useWatched();
   const watched = isWatched(Number(id), type);
 
   const breadcrumbItems = [
@@ -79,7 +96,7 @@ const Details = () => {
 
   const handleFavoriteClick = () => {
     if (!user) {
-      window.location.href = "/login";
+      navigate("/login");
       return;
     }
     toggleFavorite.mutate({
