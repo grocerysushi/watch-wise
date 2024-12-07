@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 import {
   CommandDialog,
   CommandEmpty,
@@ -35,6 +34,13 @@ export function SearchCommand() {
     };
   }, []);
 
+  // Reset query when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+    }
+  }, [open]);
+
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
     queryFn: () => searchMedia(query),
@@ -45,7 +51,6 @@ export function SearchCommand() {
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     navigate(`/${mediaType}/${id}/${slug}`);
     setOpen(false);
-    setQuery("");
   };
 
   return (
