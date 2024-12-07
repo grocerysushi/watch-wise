@@ -39,8 +39,19 @@ export function MediaCard({ media }: MediaCardProps) {
     setImageError(true);
   };
 
+  // Create URL-friendly slug from title
+  const createSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-'); // Remove consecutive hyphens
+  };
+
+  const mediaUrl = `/${media.media_type}/${media.id}/${createSlug(title)}`;
+
   return (
-    <Link to={`/${media.media_type}/${media.id}`}>
+    <Link to={mediaUrl}>
       <Card className="group relative overflow-hidden transition-all hover:scale-105">
         <div className="aspect-[2/3] overflow-hidden">
           {!imageError && media.poster_path ? (

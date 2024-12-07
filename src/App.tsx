@@ -37,7 +37,10 @@ const App = () => (
             <Navigation />
             <Routes>
               <Route path="/" element={<Index />} />
-              {/* Media routes */}
+              {/* Media routes with slugs */}
+              <Route path="/movie/:id/:slug" element={<Details />} />
+              <Route path="/tv/:id/:slug" element={<Details />} />
+              {/* Backward compatibility routes */}
               <Route path="/movie/:id" element={<Details />} />
               <Route path="/tv/:id" element={<Details />} />
               {/* Auth routes */}
