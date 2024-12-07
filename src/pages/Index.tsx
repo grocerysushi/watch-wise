@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getTrending } from "@/lib/tmdb";
 import { MediaCard } from "@/components/MediaCard";
 import { Helmet } from "react-helmet";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useProfile } from "@/hooks/useProfile";
 
 const Index = () => {
@@ -84,13 +83,15 @@ const Index = () => {
         <link rel="canonical" href="https://www.cueious.net" />
       </Helmet>
       
-      <main className="container min-h-screen pt-24 pb-8 animate-fade-up">
-        <div className="space-y-6">
-          <header className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-              {profile?.display_name ? `Welcome back, ${profile.display_name}!` : 'Trending Movies & TV Shows This Week'}
+      <main className="container min-h-screen px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-8 animate-fade-up">
+        <div className="space-y-6 sm:space-y-8">
+          <header className="space-y-2 sm:space-y-4 text-center sm:text-left max-w-3xl mx-auto sm:mx-0">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter">
+              {profile?.display_name 
+                ? `Welcome back, ${profile.display_name}!` 
+                : 'Trending Movies & TV Shows This Week'}
             </h1>
-            <p className="text-muted-foreground max-w-[800px]">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-[800px]">
               Discover the most popular shows and movies trending this week. Stay up to date with what everyone's watching and find your next favorite entertainment.
             </p>
           </header>
@@ -100,7 +101,7 @@ const Index = () => {
             aria-label="Trending movies and TV shows"
           >
             {isLoading ? (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <div
                     key={i}
@@ -109,7 +110,7 @@ const Index = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
                 {trending?.map((media) => (
                   <MediaCard 
                     key={media.id} 
