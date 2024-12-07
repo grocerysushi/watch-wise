@@ -7,6 +7,7 @@ import { MediaTrailer } from "@/components/media/MediaTrailer";
 import { MediaDetails } from "@/lib/tmdb";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
+import confetti from "canvas-confetti";
 
 interface MediaContentProps {
   media: MediaDetails;
@@ -27,6 +28,17 @@ export function MediaContent({
   onFavoriteClick,
   onWatchedClick
 }: MediaContentProps) {
+  const handleWatchedClick = () => {
+    if (!watched) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+    onWatchedClick();
+  };
+
   return (
     <div className="animate-fade-up space-y-8">
       <MediaHeader
@@ -35,7 +47,7 @@ export function MediaContent({
         status={media.status}
         backdropPath={media.backdrop_path}
         onFavoriteClick={onFavoriteClick}
-        onWatchedClick={onWatchedClick}
+        onWatchedClick={handleWatchedClick}
         isFavorite={favorite}
         isWatched={watched}
       />

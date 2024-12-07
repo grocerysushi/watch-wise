@@ -8,6 +8,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { useWatched } from "@/hooks/useWatched";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import confetti from "canvas-confetti";
 
 interface MediaCardProps {
   media: Media;
@@ -35,16 +36,34 @@ export function MediaCard({ media }: MediaCardProps) {
     });
   };
 
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  };
+
   const handleWatchedClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (!user) {
       navigate("/login");
       return;
     }
-    toggleWatched.mutate({
-      mediaId: media.id,
-      mediaType: media.media_type,
-    });
+    const isCurrentlyWatched = isWatched(media.id, media.media_type);
+    toggleWatched.mutate(
+      {
+        mediaId: media.id,
+        mediaType: media.media_type,
+      },
+      {
+        onSuccess: () => {
+          if (!isCurrentlyWatched) {
+            triggerConfetti();
+          }
+        },
+      }
+    );
   };
 
   const favorite = isFavorite(media.id, media.media_type);
@@ -112,7 +131,7 @@ export function MediaCard({ media }: MediaCardProps) {
             variant="ghost"
             className={cn(
               "transition-colors",
-              watched && "text-green-500"
+              watched && "text-green-500 bg-green-500/10"
             )}
             onClick={handleWatchedClick}
           >
