@@ -40,7 +40,7 @@ export async function searchMedia(query: string): Promise<Media[]> {
     return filteredResults;
   } catch (error) {
     console.error('TMDB API search error:', error);
-    return [];
+    throw error; // Let's throw the error to handle it in the UI
   }
 }
 
