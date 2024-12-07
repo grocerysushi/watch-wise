@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js";
-import { Profile } from "@/integrations/supabase/types";
+import { Database } from "@/integrations/supabase/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface UserNavProps {
   user: User;
