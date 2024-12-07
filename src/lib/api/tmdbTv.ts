@@ -4,20 +4,22 @@ import { API_KEY, BASE_URL } from './tmdbCommon';
 export async function getTvDetails(id: number): Promise<MediaDetails> {
   console.log(`Fetching details for TV show ${id}`);
   
-  const [detailsResponse, providersResponse, creditsResponse, ratingsResponse, similarResponse] = await Promise.all([
+  const [detailsResponse, providersResponse, creditsResponse, ratingsResponse, similarResponse, videosResponse] = await Promise.all([
     fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}&append_to_response=credits,seasons`),
     fetch(`${BASE_URL}/tv/${id}/watch/providers?api_key=${API_KEY}`),
     fetch(`${BASE_URL}/tv/${id}/credits?api_key=${API_KEY}`),
     fetch(`${BASE_URL}/tv/${id}/content_ratings?api_key=${API_KEY}`),
-    fetch(`${BASE_URL}/tv/${id}/similar?api_key=${API_KEY}`)
+    fetch(`${BASE_URL}/tv/${id}/similar?api_key=${API_KEY}`),
+    fetch(`${BASE_URL}/tv/${id}/videos?api_key=${API_KEY}`)
   ]);
 
-  const [details, providers, credits, ratings, similar] = await Promise.all([
+  const [details, providers, credits, ratings, similar, videos] = await Promise.all([
     detailsResponse.json(),
     providersResponse.json(),
     creditsResponse.json(),
     ratingsResponse.json(),
-    similarResponse.json()
+    similarResponse.json(),
+    videosResponse.json()
   ]);
 
   // If it's a TV show, fetch episodes for each season
@@ -93,6 +95,7 @@ export async function getTvDetails(id: number): Promise<MediaDetails> {
     aggregate_rating: aggregateRating,
     pricing,
     seasons,
-    similar: similarMedia
+    similar: similarMedia,
+    videos
   };
 }

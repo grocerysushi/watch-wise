@@ -3,6 +3,7 @@ import { MediaSeasons } from "@/components/media/MediaSeasons";
 import { MediaProviders } from "@/components/media/MediaProviders";
 import { MediaHeader } from "@/components/media/MediaHeader";
 import { MediaCast } from "@/components/media/MediaCast";
+import { MediaTrailer } from "@/components/media/MediaTrailer";
 import { MediaDetails } from "@/lib/tmdb";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
@@ -59,6 +60,8 @@ export function MediaContent({
           numberOfSeasons={media.number_of_seasons}
           numberOfEpisodes={media.number_of_episodes}
         />
+
+        <MediaTrailer videos={media.videos} />
         
         {media.media_type === "tv" && media.seasons && (
           <MediaSeasons seasons={media.seasons} />

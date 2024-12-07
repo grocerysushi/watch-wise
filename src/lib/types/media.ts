@@ -82,6 +82,15 @@ export interface Season {
   episodes?: Episode[];
 }
 
+export interface Video {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+}
+
 export interface MediaDetails extends Media {
   watch_providers?: WatchProviders;
   seasons?: Season[];
@@ -98,4 +107,7 @@ export interface MediaDetails extends Media {
   };
   pricing?: PriceInfo[];
   similar?: Media[];
+  videos?: {
+    results: Video[];
+  };
 }
