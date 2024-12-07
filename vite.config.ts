@@ -11,11 +11,21 @@ export default defineConfig({
     },
   },
   server: {
-    // Handle client-side routing
-    historyApiFallback: true,
+    port: 8080,
+    host: "::",
+    proxy: {
+      // Redirect all non-asset requests to index.html for SPA routing
+      '^(?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)).*$': {
+        target: '/',
+        bypass: (req) => {
+          if (req.url) {
+            return '/index.html';
+          }
+        },
+      },
+    },
   },
   preview: {
-    // Handle client-side routing in preview mode
-    historyApiFallback: true,
+    port: 8080,
   },
 });
