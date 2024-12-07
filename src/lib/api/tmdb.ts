@@ -8,13 +8,5 @@ import { getTvDetails } from './tmdbTv';
 import { MediaDetails } from '../types/media';
 
 export async function getMediaDetails(id: number, type: "movie" | "tv"): Promise<MediaDetails> {
-  console.log(`Fetching details for ${type} ${id}`);
-  try {
-    const result = type === "movie" ? await getMovieDetails(id) : await getTvDetails(id);
-    console.log(`Got ${type} details:`, result);
-    return result;
-  } catch (error) {
-    console.error(`Error fetching ${type} details:`, error);
-    throw error;
-  }
+  return type === "movie" ? getMovieDetails(id) : getTvDetails(id);
 }

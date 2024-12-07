@@ -6,6 +6,8 @@ export const BASE_URL = "https://api.themoviedb.org/3";
 export async function searchMedia(query: string): Promise<Media[]> {
   if (!query) return [];
   
+  console.log("Making TMDB API call for query:", query);
+  
   try {
     const response = await fetch(
       `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`,
@@ -22,21 +24,18 @@ export async function searchMedia(query: string): Promise<Media[]> {
     }
     
     const data = await response.json();
-    
-    if (!data.results) {
-      console.error("No results in TMDB API response");
-      return [];
-    }
+    console.log("TMDB API response:", data);
     
     const filteredResults = data.results.filter((item: any) => 
       (item.media_type === 'movie' || item.media_type === 'tv') && 
       (item.title || item.name)
     );
     
+    console.log("Filtered results:", filteredResults);
     return filteredResults;
   } catch (error) {
     console.error('TMDB API search error:', error);
-    return [];
+    throw error;
   }
 }
 

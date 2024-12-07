@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getMediaDetails } from "@/lib/tmdb";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
-import { useWatched } from "@/hooks/useWatched";
 import { MediaContent } from "@/components/media/MediaContent";
 import { MediaLoading } from "@/components/media/MediaLoading";
 import { MediaSEO } from "@/components/media/MediaSEO";
@@ -15,30 +14,27 @@ const Details = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const { toggleWatched, isWatched } = useWatched();
   
   // Determine media type from URL
   const type = window.location.pathname.includes('/tv/') ? 'tv' : 'movie';
   
   console.log("Details page mounted, params:", { type, id });
   
-  const { data: media, isLoading, isError, error } = useQuery({
+  const { data: media, isLoading, isError } = useQuery({
     queryKey: ["media", id, type],
     queryFn: async () => {
-      if (!id) {
-        console.error("Missing ID parameter");
-        throw new Error("Missing ID parameter");
-      }
-
-      console.log("Fetching details for:", { type, id });
       try {
+        if (!id) {
+          console.error("Missing ID parameter");
+          throw new Error("Missing ID parameter");
+        }
+
+        console.log("Fetching details for:", { type, id });
         const result = await getMediaDetails(Number(id), type);
         console.log("Fetch result:", result);
         
         // Update sitemap after successful fetch
-        if (result) {
-          updateSitemapEntry(result).catch(console.error);
-        }
+        updateSitemapEntry(result);
         
         return result;
       } catch (error) {
@@ -47,28 +43,13 @@ const Details = () => {
       }
     },
     enabled: Boolean(id),
-    retry: 1,
   });
 
   // Handle error state
   if (isError) {
-    console.error("Error in Details page:", error);
-    return (
-      <div className="container min-h-screen pt-24 pb-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Error Loading Content</h1>
-          <p className="mt-2 text-muted-foreground">
-            Unable to load the content. Please try again later.
-          </p>
-          <button 
-            onClick={() => navigate("/")}
-            className="mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-md"
-          >
-            Go Home
-          </button>
-        </div>
-      </div>
-    );
+    console.error("Error in Details page");
+    navigate("/");
+    return null;
   }
 
   // Handle loading state
@@ -81,7 +62,6 @@ const Details = () => {
   const date = media.release_date || media.first_air_date;
   const year = date ? new Date(date).getFullYear().toString() : "";
   const favorite = isFavorite(media.id, media.media_type);
-  const watched = isWatched(Number(id), type);
 
   const breadcrumbItems = [
     {
@@ -96,23 +76,12 @@ const Details = () => {
 
   const handleFavoriteClick = () => {
     if (!user) {
-      navigate("/login");
+      window.location.href = "/login";
       return;
     }
     toggleFavorite.mutate({
       mediaId: media.id,
       mediaType: media.media_type,
-    });
-  };
-
-  const handleWatchedClick = () => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-    toggleWatched.mutate({
-      mediaId: Number(id),
-      mediaType: type,
     });
   };
 
@@ -131,9 +100,7 @@ const Details = () => {
           title={title}
           year={year}
           favorite={favorite}
-          watched={watched}
           onFavoriteClick={handleFavoriteClick}
-          onWatchedClick={handleWatchedClick}
         />
       </div>
     </>

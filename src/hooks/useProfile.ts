@@ -8,12 +8,17 @@ export function useProfile() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
+  console.log("Fetching profile for user:", user?.id); // Debug log
+
   const { data: profile, isLoading } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
       if (!user) {
+        console.log("No user found, returning null"); // Debug log
         return null;
       }
+
+      console.log("Making Supabase query for user ID:", user.id); // Debug log
 
       const { data, error } = await supabase
         .from("profiles")
@@ -22,22 +27,21 @@ export function useProfile() {
         .single();
 
       if (error) {
-        // Only log the error, don't throw it
-        console.error("Error fetching profile:", error);
-        return null;
+        console.error("Error fetching profile:", error); // Debug log
+        throw error;
       }
 
+      console.log("Profile data received:", data); // Debug log
       return data as UserProfile;
     },
     enabled: !!user,
-    retry: false,
-    // Use throwOnError instead of useErrorBoundary
-    throwOnError: false
   });
 
   const updateProfile = useMutation({
     mutationFn: async (updates: Partial<UserProfile>) => {
       if (!user) throw new Error("User not authenticated");
+
+      console.log("Updating profile for user:", user.id, "with:", updates); // Debug log
 
       const { error } = await supabase
         .from("profiles")

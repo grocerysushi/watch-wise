@@ -80,19 +80,17 @@ export function MediaCard({ media }: MediaCardProps) {
             <p className="text-sm text-white/80">{year}</p>
           </div>
         </div>
-        <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
-          <Button
-            size="icon"
-            variant="ghost"
-            className={cn(
-              "transition-colors",
-              favorite && "text-red-500"
-            )}
-            onClick={handleFavoriteClick}
-          >
-            <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
-          </Button>
-        </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          className={cn(
+            "absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100",
+            favorite && "text-red-500"
+          )}
+          onClick={handleFavoriteClick}
+        >
+          <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
+        </Button>
       </Card>
     </Link>
   );

@@ -96,36 +96,6 @@ export type Database = {
         }
         Relationships: []
       }
-      watched: {
-        Row: {
-          episode_number: number | null
-          id: string
-          media_id: number
-          media_type: string
-          season_number: number | null
-          user_id: string
-          watched_at: string | null
-        }
-        Insert: {
-          episode_number?: number | null
-          id?: string
-          media_id: number
-          media_type: string
-          season_number?: number | null
-          user_id: string
-          watched_at?: string | null
-        }
-        Update: {
-          episode_number?: number | null
-          id?: string
-          media_id?: number
-          media_type?: string
-          season_number?: number | null
-          user_id?: string
-          watched_at?: string | null
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never

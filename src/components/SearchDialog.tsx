@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Command, CommandInput, CommandList } from "@/components/ui/command";
 import { SearchResults } from "@/components/search/SearchResults";
 import { useQuery } from "@tanstack/react-query";
@@ -28,14 +28,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
-        className="gap-0 p-0"
-        aria-describedby="search-dialog-description"
-      >
-        <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
-        <div id="search-dialog-description" className="sr-only">
-          Search for movies and TV shows by title
-        </div>
+      <DialogContent className="gap-0 p-0">
         <Command className="rounded-lg border shadow-md">
           <CommandInput
             value={query}

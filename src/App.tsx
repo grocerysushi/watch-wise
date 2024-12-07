@@ -8,7 +8,6 @@ import { Navigation } from "@/components/Navigation";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
-import { SearchCommand } from "@/components/SearchCommand";
 import Index from "./pages/Index";
 import Details from "./pages/Details";
 import Login from "./pages/Login";
@@ -36,7 +35,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Navigation />
-            <SearchCommand />
             <Routes>
               <Route path="/" element={<Index />} />
               {/* Media routes with slugs */}
