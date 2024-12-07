@@ -27,6 +27,9 @@ export function SearchCommand() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
+  // Store the setOpen function in our module-level variable
+  showSearchCommand = () => setOpen(true);
+
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
     queryFn: () => searchMedia(query),
