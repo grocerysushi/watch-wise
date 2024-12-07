@@ -43,11 +43,18 @@ export function SearchCommand() {
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
-    queryFn: () => searchMedia(query),
+    queryFn: () => {
+      console.log("Searching for:", query);
+      return searchMedia(query);
+    },
     enabled: query.length > 0,
   });
 
+  console.log("Current query:", query);
+  console.log("Search results:", results);
+
   const handleSelect = (mediaType: string, id: number, title: string) => {
+    console.log("Selected item:", { mediaType, id, title });
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     navigate(`/${mediaType}/${id}/${slug}`);
     setOpen(false);
@@ -66,7 +73,10 @@ export function SearchCommand() {
       <CommandInput 
         placeholder="Search movies & TV shows..." 
         value={query}
-        onValueChange={setQuery}
+        onValueChange={(value) => {
+          console.log("Input value changed:", value);
+          setQuery(value);
+        }}
         aria-describedby="search-dialog-description"
       />
       <CommandList>
