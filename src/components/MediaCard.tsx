@@ -2,13 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Media } from "@/lib/tmdb";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Image as ImageIcon, CheckCircle2 } from "lucide-react";
+import { Heart, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
-import { useWatched } from "@/hooks/useWatched";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import confetti from "canvas-confetti";
 
 interface MediaCardProps {
   media: Media;
@@ -21,7 +19,6 @@ export function MediaCard({ media }: MediaCardProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const { toggleWatched, isWatched } = useWatched();
   const [imageError, setImageError] = useState(false);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -36,38 +33,7 @@ export function MediaCard({ media }: MediaCardProps) {
     });
   };
 
-  const triggerConfetti = () => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-  };
-
-  const handleWatchedClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-    const isCurrentlyWatched = isWatched(media.id, media.media_type);
-    toggleWatched.mutate(
-      {
-        mediaId: media.id,
-        mediaType: media.media_type,
-      },
-      {
-        onSuccess: () => {
-          if (!isCurrentlyWatched) {
-            triggerConfetti();
-          }
-        },
-      }
-    );
-  };
-
   const favorite = isFavorite(media.id, media.media_type);
-  const watched = isWatched(media.id, media.media_type);
 
   const handleImageError = () => {
     setImageError(true);
@@ -114,7 +80,7 @@ export function MediaCard({ media }: MediaCardProps) {
             <p className="text-sm text-white/80">{year}</p>
           </div>
         </div>
-        <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
           <Button
             size="icon"
             variant="ghost"
@@ -125,17 +91,6 @@ export function MediaCard({ media }: MediaCardProps) {
             onClick={handleFavoriteClick}
           >
             <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className={cn(
-              "transition-colors",
-              watched && "text-green-500 bg-green-500/10"
-            )}
-            onClick={handleWatchedClick}
-          >
-            <CheckCircle2 className={cn("h-5 w-5", watched && "fill-current")} />
           </Button>
         </div>
       </Card>
