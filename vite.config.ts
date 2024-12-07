@@ -1,34 +1,21 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import path from 'path';
-import { componentTagger } from "lovable-tagger";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
 
-export default defineConfig(({ mode }) => ({
-  plugins: [
-    react(),
-    mode === 'development' && componentTagger(),
-  ].filter(Boolean),
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   server: {
-    port: 8080,
-    host: "::",
-    proxy: {
-      // Redirect all non-asset requests to index.html for SPA routing
-      '^(?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)).*$': {
-        target: '/',
-        bypass: (req) => {
-          if (req.url) {
-            return '/index.html';
-          }
-        },
-      },
-    },
+    // Handle client-side routing
+    historyApiFallback: true,
   },
   preview: {
-    port: 8080,
+    // Handle client-side routing in preview mode
+    historyApiFallback: true,
   },
-}));
+});
