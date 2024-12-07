@@ -54,12 +54,20 @@ export function SearchCommand() {
   };
 
   return (
-    <CommandDialog open={open} onOpenChange={setOpen}>
+    <CommandDialog 
+      open={open} 
+      onOpenChange={setOpen}
+      aria-label="Search movies and TV shows"
+    >
       <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
+      <div id="search-dialog-description" className="sr-only">
+        Search for movies and TV shows by title
+      </div>
       <CommandInput 
         placeholder="Search movies & TV shows..." 
         value={query}
         onValueChange={setQuery}
+        aria-describedby="search-dialog-description"
       />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
