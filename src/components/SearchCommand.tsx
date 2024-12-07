@@ -9,25 +9,30 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Search } from "lucide-react";
+import { useState } from "react";
 
-let commandDialog: HTMLDialogElement | null = null;
+let showSearchCommand: (() => void) | null = null;
 
 export function openSearch() {
-  if (commandDialog) {
-    commandDialog.showModal();
+  if (showSearchCommand) {
+    showSearchCommand();
   }
 }
 
 export function SearchCommand() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  // Store the setOpen function in our module-level variable
+  showSearchCommand = () => setOpen(true);
 
   const runCommand = (command: () => unknown) => {
-    commandDialog?.close();
+    setOpen(false);
     command();
   };
 
   return (
-    <CommandDialog ref={(ref) => (commandDialog = ref)}>
+    <CommandDialog open={open} onOpenChange={setOpen}>
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
