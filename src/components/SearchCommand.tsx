@@ -55,16 +55,13 @@ export function SearchCommand() {
           return [];
         }
         
-        // Map the response to ensure we have all required Media properties
+        // Map the response to ensure we have the correct properties
         const mappedResults = response.map((item: any) => ({
           id: item.id,
           media_type: item.media_type,
           title: item.title || item.name,
           name: item.name,
           poster_path: item.poster_path,
-          backdrop_path: item.backdrop_path,
-          overview: item.overview,
-          vote_average: item.vote_average,
           release_date: item.release_date,
           first_air_date: item.first_air_date
         }));
