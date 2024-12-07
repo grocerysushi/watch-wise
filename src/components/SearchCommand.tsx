@@ -41,14 +41,23 @@ export function SearchCommand() {
     }
   }, [open]);
 
-  const { data: results, isLoading } = useQuery({
+  const { data: results = [], isLoading } = useQuery({
     queryKey: ["search", query],
     queryFn: async () => {
       console.log("Searching for:", query);
       if (!query) return [];
-      const data = await searchMedia(query);
-      console.log("Search API response:", data);
-      return data;
+      try {
+        const data = await searchMedia(query);
+        console.log("Search API response:", data);
+        if (!data) {
+          console.warn("No data returned from search");
+          return [];
+        }
+        return data;
+      } catch (error) {
+        console.error("Search error:", error);
+        return [];
+      }
     },
     enabled: query.length > 0,
   });
@@ -70,16 +79,13 @@ export function SearchCommand() {
       aria-label="Search movies and TV shows"
     >
       <DialogTitle className="sr-only">Search movies and TV shows</DialogTitle>
-      <div id="search-dialog-description" className="sr-only">
-        Search for movies and TV shows by title
+      <div className="sr-only" id="search-dialog-description">
+        Search for movies and TV shows by title. Use arrow keys to navigate results and Enter to select.
       </div>
       <CommandInput 
         placeholder="Search movies & TV shows..." 
         value={query}
-        onValueChange={(value) => {
-          console.log("Input value changed:", value);
-          setQuery(value);
-        }}
+        onValueChange={setQuery}
         aria-describedby="search-dialog-description"
       />
       <CommandList>
