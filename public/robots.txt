@@ -1,4 +1,46 @@
+# Global rules for all web crawlers
 User-agent: *
 Allow: /
+Allow: /movie/*
+Allow: /tv/*
+Allow: /search
+Allow: /upcoming
 
+# Prevent crawling of authentication pages
+Disallow: /login
+Disallow: /register
+Disallow: /reset-password
+Disallow: /verify
+
+# Prevent crawling of user-specific pages
+Disallow: /profile/*
+Disallow: /favorites
+Disallow: /settings
+
+# Allow crawling of static assets
+Allow: /*.js
+Allow: /*.css
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.ico
+
+# Specify the sitemap location
 Sitemap: https://www.cueious.net/sitemap.xml
+
+# Crawl-delay directive for rate limiting (in seconds)
+Crawl-delay: 1
+
+# Additional rules for specific bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
