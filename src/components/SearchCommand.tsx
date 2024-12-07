@@ -37,18 +37,11 @@ export function SearchCommand() {
 
   const { data: results, isLoading } = useQuery({
     queryKey: ["search", query],
-    queryFn: () => {
-      console.log("Searching for:", query);
-      return searchMedia(query);
-    },
+    queryFn: () => searchMedia(query),
     enabled: query.length > 0,
   });
 
-  console.log("Search results:", results);
-  console.log("Is loading:", isLoading);
-
   const handleSelect = (mediaType: string, id: number, title: string) => {
-    console.log("Selected item:", { mediaType, id, title });
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     navigate(`/${mediaType}/${id}/${slug}`);
     setOpen(false);
@@ -61,20 +54,16 @@ export function SearchCommand() {
       <CommandInput 
         placeholder="Search movies & TV shows..." 
         value={query}
-        onValueChange={(value) => {
-          console.log("Input value changed:", value);
-          setQuery(value);
-        }}
+        onValueChange={setQuery}
       />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        {query.length === 0 && (
+        {query.length === 0 ? (
           <CommandGroup heading="Suggestions">
             <CommandItem
               onSelect={() => {
                 setOpen(false);
                 navigate("/");
-                toast("Navigated to home");
               }}
             >
               <Search className="mr-2 h-4 w-4" />
@@ -84,15 +73,14 @@ export function SearchCommand() {
               onSelect={() => {
                 setOpen(false);
                 navigate("/upcoming");
-                toast("Navigated to upcoming");
               }}
             >
               <Search className="mr-2 h-4 w-4" />
               <span>Upcoming</span>
             </CommandItem>
           </CommandGroup>
-        )}
-        {query.length > 0 && !isLoading && results && (
+        ) : null}
+        {query.length > 0 && !isLoading && results && results.length > 0 && (
           <CommandGroup heading="Search Results">
             {results.map((item: Media) => (
               <CommandItem

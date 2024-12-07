@@ -26,6 +26,11 @@ export async function searchMedia(query: string): Promise<Media[]> {
     const data = await response.json();
     console.log("TMDB API response:", data);
     
+    if (!data.results) {
+      console.error("No results in TMDB API response");
+      return [];
+    }
+    
     const filteredResults = data.results.filter((item: any) => 
       (item.media_type === 'movie' || item.media_type === 'tv') && 
       (item.title || item.name)
@@ -35,7 +40,7 @@ export async function searchMedia(query: string): Promise<Media[]> {
     return filteredResults;
   } catch (error) {
     console.error('TMDB API search error:', error);
-    throw error;
+    return [];
   }
 }
 
