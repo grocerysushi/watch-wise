@@ -13,7 +13,6 @@ const Index = () => {
 
   const { profile } = useProfile();
 
-  // Enhanced structured data for better SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -50,25 +49,16 @@ const Index = () => {
     "url": "https://www.cueious.net",
     "logo": "https://www.cueious.net/lovable-uploads/a89e392b-ac7d-4556-8f41-b064ab664e62.png",
     "sameAs": [
-      "https://twitter.com/cueious",
-      // Add other social media links when available
+      "https://twitter.com/cueious"
     ]
   };
 
   return (
     <>
       <Helmet>
-        <title>Cueious - Best Movie & TV Show Tracker | Discover What to Watch Next</title>
-        <meta name="description" content="Discover the best movies and TV shows to watch. Track what you've watched, create watchlists, and get personalized recommendations. Join millions of users on Cueious today!" />
-        <meta name="keywords" content="movie tracker, TV show tracker, what to watch, movie recommendations, TV series recommendations, streaming guide, entertainment tracker, watchlist, movie database, TV show database" />
-        
-        {/* Open Graph tags for better social sharing */}
-        <meta property="og:title" content="Cueious - Your Ultimate Movie & TV Show Companion" />
-        <meta property="og:description" content="Track, discover, and never miss great entertainment. Get personalized movie and TV show recommendations based on what you love." />
-        
-        {/* Twitter Card tags */}
-        <meta name="twitter:title" content="Cueious - Best Movie & TV Show Discovery Platform" />
-        <meta name="twitter:description" content="Your personal entertainment guide. Track what you watch, discover new content, and never miss great shows and movies." />
+        <title>Cueious - Best Movie & TV Show Tracker | Rate, Review & Discover Entertainment</title>
+        <meta name="description" content="Track and rate movies & TV shows with Cueious, your personal entertainment companion. Create watchlists, get personalized recommendations, and discover what to watch next. Join our community of movie enthusiasts today!" />
+        <meta name="keywords" content="movie tracker app, TV show tracker, what to watch next, movie watchlist, TV series tracker, movie rating app, personal movie database, TV show recommendations, movie collection manager, binge watch planner, entertainment tracking, movie reviews, TV show ratings, streaming guide, watch history" />
         
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
@@ -89,10 +79,10 @@ const Index = () => {
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter">
               {profile?.display_name 
                 ? `Welcome back, ${profile.display_name}!` 
-                : 'Trending Movies & TV Shows This Week'}
+                : 'Discover and Track Your Entertainment Journey'}
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-[800px]">
-              Discover the most popular shows and movies trending this week. Stay up to date with what everyone's watching and find your next favorite entertainment.
+              Your personal movie and TV show companion. Rate what you've watched, create watchlists, and get personalized recommendations. Join thousands of entertainment enthusiasts discovering their next favorite show or movie.
             </p>
           </header>
 
