@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navigation } from "@/components/Navigation";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
 import Details from "./pages/Details";
 import Login from "./pages/Login";
@@ -48,6 +49,7 @@ const App = () => (
             </Routes>
           </BrowserRouter>
           <SpeedInsights />
+          <Analytics />
         </AuthProvider>
       </TooltipProvider>
     </ThemeProvider>
