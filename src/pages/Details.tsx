@@ -10,28 +10,29 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { updateSitemapEntry } from "@/lib/seo";
 
 const Details = () => {
-  const { id } = useParams();
+  const { id, slug } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
   
-  // Determine media type from URL
-  const type = window.location.pathname.includes('/tv/') ? 'tv' : 'movie';
+  // Determine media type from URL and ensure it's valid
+  const mediaType = window.location.pathname.includes('/tv/') ? 'tv' : 'movie';
+  const mediaId = id ? parseInt(id, 10) : null;
   
-  console.log("Details page mounted, params:", { type, id });
+  console.log("Details page mounted", { mediaType, mediaId, slug });
   
   const { data: media, isLoading, isError } = useQuery({
-    queryKey: ["media", id, type],
+    queryKey: ["media", mediaId, mediaType],
     queryFn: async () => {
-      try {
-        if (!id) {
-          console.error("Missing ID parameter");
-          throw new Error("Missing ID parameter");
-        }
+      if (!mediaId) {
+        console.error("Invalid media ID");
+        throw new Error("Invalid media ID");
+      }
 
-        console.log("Fetching details for:", { type, id });
-        const result = await getMediaDetails(Number(id), type);
-        console.log("Fetch result:", result);
+      try {
+        console.log("Fetching media details:", { mediaType, mediaId });
+        const result = await getMediaDetails(mediaId, mediaType);
+        console.log("Media details fetched:", result);
         
         // Update sitemap after successful fetch
         updateSitemapEntry(result);
@@ -42,11 +43,12 @@ const Details = () => {
         throw error;
       }
     },
-    enabled: Boolean(id),
+    enabled: Boolean(mediaId),
     retry: 1,
-    retryDelay: 1000,
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     meta: {
       errorHandler: () => {
+        console.error("Redirecting to 404 due to error");
         navigate("/404", { replace: true });
       }
     }
@@ -54,13 +56,13 @@ const Details = () => {
 
   // Handle loading state
   if (isLoading || !media) {
-    console.log("Loading state in Details page");
+    console.log("Loading media details...");
     return <MediaLoading />;
   }
 
   // Handle error state
   if (isError) {
-    console.error("Error in Details page");
+    console.error("Error loading media details");
     return null; // The error handler in meta will handle navigation
   }
 
@@ -76,13 +78,13 @@ const Details = () => {
     },
     {
       label: title,
-      href: `/${media.media_type}/${media.id}`
+      href: `/${media.media_type}/${media.id}/${slug}`
     }
   ];
 
   const handleFavoriteClick = () => {
     if (!user) {
-      window.location.href = "/login";
+      navigate("/login");
       return;
     }
     toggleFavorite.mutate({
