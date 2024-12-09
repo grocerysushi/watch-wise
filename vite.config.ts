@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => ({
       '^(?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)).*$': {
         target: '/',
         bypass: (req) => {
-          if (req.url) {
+          if (req.headers.accept?.includes('text/html')) {
             return '/index.html';
           }
         },
