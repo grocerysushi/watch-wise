@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface MediaCardProps {
   media: Media;
@@ -80,18 +81,27 @@ export function MediaCard({ media }: MediaCardProps) {
             <p className="text-sm text-white/80">{year}</p>
           </div>
         </div>
-        <Button
-          size="icon"
-          variant="ghost"
-          className={cn(
-            "absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100",
-            favorite && "text-red-500"
-          )}
-          onClick={handleFavoriteClick}
-          aria-label={favorite ? `Remove ${title} from favorites` : `Add ${title} to favorites`}
-        >
-          <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                className={cn(
+                  "absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100",
+                  favorite && "text-red-500"
+                )}
+                onClick={handleFavoriteClick}
+                aria-label={favorite ? `Remove ${title} from favorites` : `Add ${title} to favorites`}
+              >
+                <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Favorite</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </Card>
     </Link>
   );
