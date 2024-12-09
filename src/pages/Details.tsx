@@ -8,18 +8,20 @@ import { MediaLoading } from "@/components/media/MediaLoading";
 import { MediaSEO } from "@/components/media/MediaSEO";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { updateSitemapEntry } from "@/lib/seo";
+import { useToast } from "@/components/ui/use-toast";
 
 const Details = () => {
   const { id, slug } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { toast } = useToast();
   
   // Determine media type from URL and ensure it's valid
   const mediaType = window.location.pathname.includes('/tv/') ? 'tv' : 'movie';
   const mediaId = id ? parseInt(id, 10) : null;
   
-  console.log("Details page mounted", { mediaType, mediaId, slug });
+  console.log("Details page mounted", { mediaType, mediaId, slug, pathname: window.location.pathname });
   
   const { data: media, isLoading, isError } = useQuery({
     queryKey: ["media", mediaId, mediaType],
@@ -40,6 +42,11 @@ const Details = () => {
         return result;
       } catch (error) {
         console.error("Error fetching media details:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load media details. Please try again.",
+          variant: "destructive",
+        });
         throw error;
       }
     },

@@ -16,8 +16,14 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 8080,
     host: "::",
-    // Ensure all routes are redirected to index.html for client-side routing
-    historyApiFallback: true,
+    historyApiFallback: {
+      disableDotRule: true,
+      rewrites: [
+        { from: /^\/movie\/.*$/, to: '/index.html' },
+        { from: /^\/tv\/.*$/, to: '/index.html' },
+        { from: /./, to: '/index.html' }
+      ]
+    }
   },
   preview: {
     port: 8080,
