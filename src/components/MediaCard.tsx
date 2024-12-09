@@ -57,7 +57,7 @@ export function MediaCard({ media }: MediaCardProps) {
           {!imageError && media.poster_path ? (
             <img
               src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
-              alt={title}
+              alt={`Poster for ${title}`}
               className="h-full w-full object-cover transition-all group-hover:scale-105"
               loading="lazy"
               width="500"
@@ -88,6 +88,7 @@ export function MediaCard({ media }: MediaCardProps) {
             favorite && "text-red-500"
           )}
           onClick={handleFavoriteClick}
+          aria-label={favorite ? `Remove ${title} from favorites` : `Add ${title} to favorites`}
         >
           <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
         </Button>

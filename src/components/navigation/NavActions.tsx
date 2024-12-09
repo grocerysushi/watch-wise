@@ -32,7 +32,12 @@ export function NavActions({ onSearchClick }: NavActionsProps) {
       {user ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleLogout}
+              aria-label="Log out"
+            >
               <LogOut className="h-5 w-5" />
             </Button>
           </TooltipTrigger>
@@ -42,7 +47,7 @@ export function NavActions({ onSearchClick }: NavActionsProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" asChild>
-              <Link to="/login">
+              <Link to="/login" aria-label="Log in">
                 <LogIn className="h-5 w-5" />
               </Link>
             </Button>
