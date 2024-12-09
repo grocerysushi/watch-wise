@@ -1,13 +1,11 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Media } from "@/lib/tmdb";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/hooks/useFavorites";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { MediaImage } from "@/components/media/MediaImage";
+import { MediaFavoriteButton } from "@/components/media/MediaFavoriteButton";
 
 interface MediaCardProps {
   media: Media;
@@ -36,10 +34,6 @@ export function MediaCard({ media }: MediaCardProps) {
 
   const favorite = isFavorite(media.id, media.media_type);
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
-
   // Create URL-friendly slug from title
   const createSlug = (text: string) => {
     return text
@@ -55,25 +49,12 @@ export function MediaCard({ media }: MediaCardProps) {
     <Link to={mediaUrl}>
       <Card className="group relative overflow-hidden transition-all hover:scale-105">
         <div className="aspect-[2/3] overflow-hidden">
-          {!imageError && media.poster_path ? (
-            <img
-              src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
-              alt={`Poster for ${title}`}
-              className="h-full w-full object-cover transition-all group-hover:scale-105"
-              loading="lazy"
-              width="500"
-              height="750"
-              decoding="async"
-              onError={handleImageError}
-            />
-          ) : (
-            <div className="h-full w-full bg-muted flex items-center justify-center">
-              <div className="text-center p-4 space-y-2">
-                <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">{title}</p>
-              </div>
-            </div>
-          )}
+          <MediaImage
+            posterPath={media.poster_path}
+            title={title}
+            onError={() => setImageError(true)}
+            hasError={imageError}
+          />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100">
           <div className="absolute bottom-0 p-4 space-y-2">
@@ -81,27 +62,11 @@ export function MediaCard({ media }: MediaCardProps) {
             <p className="text-sm text-white/80">{year}</p>
           </div>
         </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="ghost"
-                className={cn(
-                  "absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100",
-                  favorite && "text-red-500"
-                )}
-                onClick={handleFavoriteClick}
-                aria-label={favorite ? `Remove ${title} from favorites` : `Add ${title} to favorites`}
-              >
-                <Heart className={cn("h-5 w-5", favorite && "fill-current")} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{favorite ? `Remove ${title} from favorites` : `Add ${title} to favorites`}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <MediaFavoriteButton
+          title={title}
+          isFavorite={favorite}
+          onClick={handleFavoriteClick}
+        />
       </Card>
     </Link>
   );
