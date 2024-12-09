@@ -98,7 +98,7 @@ export function MediaCard({ media }: MediaCardProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Favorite</p>
+              <p>{favorite ? `Remove ${title} from favorites` : `Add ${title} to favorites`}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
