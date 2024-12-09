@@ -43,11 +43,12 @@ const Details = () => {
       }
     },
     enabled: Boolean(id),
-    // Add retry configuration and better error handling
     retry: 1,
     retryDelay: 1000,
-    onError: () => {
-      navigate("/404", { replace: true });
+    meta: {
+      errorHandler: () => {
+        navigate("/404", { replace: true });
+      }
     }
   });
 
@@ -60,7 +61,7 @@ const Details = () => {
   // Handle error state
   if (isError) {
     console.error("Error in Details page");
-    return null; // The onError callback will handle navigation
+    return null; // The error handler in meta will handle navigation
   }
 
   const title = media.title || media.name;
