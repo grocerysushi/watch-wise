@@ -16,17 +16,8 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 8080,
     host: "::",
-    proxy: {
-      // Redirect all non-asset requests to index.html for SPA routing
-      '^(?!.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)).*$': {
-        target: '/',
-        bypass: (req) => {
-          if (req.headers.accept?.includes('text/html')) {
-            return '/index.html';
-          }
-        },
-      },
-    },
+    // Ensure all routes are redirected to index.html for client-side routing
+    historyApiFallback: true,
   },
   preview: {
     port: 8080,
