@@ -40,8 +40,49 @@ export async function searchMedia(query: string): Promise<Media[]> {
 }
 
 export async function getTrending(): Promise<Media[]> {
+  // Get the current day of the week (0-6, where 0 is Sunday)
+  const today = new Date().getDay();
+  
+  // Define time windows based on the day
+  const timeWindow = (() => {
+    switch (today) {
+      case 0: // Sunday
+        return 'week'; // Weekly trending
+      case 1: // Monday
+        return 'day'; // Daily trending
+      case 2: // Tuesday
+        return 'week'; // Weekly trending movies only
+      case 3: // Wednesday
+        return 'week'; // Weekly trending TV shows only
+      case 4: // Thursday
+        return 'day'; // Daily trending movies only
+      case 5: // Friday
+        return 'day'; // Daily trending TV shows only
+      case 6: // Saturday
+        return 'week'; // All-time popular
+      default:
+        return 'week';
+    }
+  })();
+
+  // Define media type based on the day
+  const mediaType = (() => {
+    switch (today) {
+      case 2: // Tuesday
+      case 4: // Thursday
+        return 'movie';
+      case 3: // Wednesday
+      case 5: // Friday
+        return 'tv';
+      default:
+        return 'all';
+    }
+  })();
+
+  console.log(`Fetching ${timeWindow} trending ${mediaType} content`);
+
   const response = await fetch(
-    `${BASE_URL}/trending/all/week?api_key=${API_KEY}`,
+    `${BASE_URL}/trending/${mediaType}/${timeWindow}?api_key=${API_KEY}`,
     {
       headers: {
         'Content-Type': 'application/json',

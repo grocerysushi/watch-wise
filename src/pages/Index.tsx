@@ -4,14 +4,37 @@ import { MediaCard } from "@/components/MediaCard";
 import { Helmet } from "react-helmet";
 import { useProfile } from "@/hooks/useProfile";
 
+const getDayContent = () => {
+  const today = new Date().getDay();
+  switch (today) {
+    case 0:
+      return "Weekly Trending Movies & TV Shows";
+    case 1:
+      return "Today's Trending Movies & TV Shows";
+    case 2:
+      return "Weekly Trending Movies";
+    case 3:
+      return "Weekly Trending TV Shows";
+    case 4:
+      return "Today's Trending Movies";
+    case 5:
+      return "Today's Trending TV Shows";
+    case 6:
+      return "All-Time Popular Movies & TV Shows";
+    default:
+      return "Trending Content";
+  }
+};
+
 const Index = () => {
   const { data: trending, isLoading } = useQuery({
-    queryKey: ["trending"],
+    queryKey: ["trending", new Date().toDateString()], // Update cache key daily
     queryFn: getTrending,
-    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+    staleTime: 1000 * 60 * 60, // Cache for 1 hour
   });
 
   const { profile } = useProfile();
+  const dayContent = getDayContent();
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -82,13 +105,13 @@ const Index = () => {
                 : 'Discover and Track Your Entertainment Journey'}
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-[800px]">
-              Your personal movie and TV show companion. Rate what you've watched, create watchlists, and get personalized recommendations. Join thousands of entertainment enthusiasts discovering their next favorite show or movie.
+              {dayContent} - Your personal movie and TV show companion. Rate what you've watched, create watchlists, and get personalized recommendations.
             </p>
           </header>
 
           <section 
             className="min-h-[200px]"
-            aria-label="Trending movies and TV shows"
+            aria-label={dayContent}
           >
             {isLoading ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
