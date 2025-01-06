@@ -6,6 +6,7 @@ export interface Media {
   backdrop_path: string;
   overview: string;
   vote_average: number;
+  vote_count: number; // Added this property
   media_type: "movie" | "tv";
   first_air_date?: string;
   release_date?: string;

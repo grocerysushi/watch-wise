@@ -68,7 +68,7 @@ const Index = () => {
       "aggregateRating": item.vote_average ? {
         "@type": "AggregateRating",
         "ratingValue": item.vote_average,
-        "ratingCount": item.vote_count,
+        "ratingCount": item.vote_count || 0,
         "bestRating": "10",
         "worstRating": "0"
       } : undefined
