@@ -3,6 +3,7 @@ import { getTrending } from "@/lib/tmdb";
 import { MediaCard } from "@/components/MediaCard";
 import { Helmet } from "react-helmet";
 import { useProfile } from "@/hooks/useProfile";
+import { AdUnit } from "@/components/ads/AdUnit";
 
 const getDayContent = () => {
   const today = new Date().getDay();
@@ -28,20 +29,22 @@ const getDayContent = () => {
 
 const Index = () => {
   const { data: trending, isLoading } = useQuery({
-    queryKey: ["trending", new Date().toDateString()], // Update cache key daily
+    queryKey: ["trending", new Date().toDateString()],
     queryFn: getTrending,
-    staleTime: 1000 * 60 * 60, // Cache for 1 hour
+    staleTime: 1000 * 60 * 60,
   });
 
   const { profile } = useProfile();
   const dayContent = getDayContent();
 
+  // Enhanced structured data for better SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Cueious - Movie and TV Show Discovery",
     "alternateName": "Cueious",
     "url": "https://www.cueious.net",
+    "description": "Track and rate movies & TV shows with Cueious. Create watchlists, get personalized recommendations, and discover what to watch next.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -61,7 +64,14 @@ const Index = () => {
       "name": item.title || item.name,
       "image": `https://image.tmdb.org/t/p/w500${item.poster_path}`,
       "datePublished": item.release_date || item.first_air_date,
-      "description": item.overview
+      "description": item.overview,
+      "aggregateRating": item.vote_average ? {
+        "@type": "AggregateRating",
+        "ratingValue": item.vote_average,
+        "ratingCount": item.vote_count,
+        "bestRating": "10",
+        "worstRating": "0"
+      } : undefined
     })) || []
   };
 
@@ -109,6 +119,14 @@ const Index = () => {
             </p>
           </header>
 
+          {/* Top Ad Unit */}
+          <div className="w-full flex justify-center">
+            <AdUnit 
+              slot="1234567890"
+              className="my-4"
+            />
+          </div>
+
           <section 
             className="min-h-[200px]"
             aria-label={dayContent}
@@ -123,16 +141,44 @@ const Index = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
-                {trending?.map((media) => (
-                  <MediaCard 
-                    key={media.id} 
-                    media={media}
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+                  {trending?.slice(0, 5).map((media) => (
+                    <MediaCard 
+                      key={media.id} 
+                      media={media}
+                    />
+                  ))}
+                </div>
+
+                {/* Mid-content Ad Unit */}
+                <div className="w-full flex justify-center my-6">
+                  <AdUnit 
+                    slot="9876543210"
+                    format="fluid"
+                    layout="in-article"
                   />
-                ))}
-              </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+                  {trending?.slice(5).map((media) => (
+                    <MediaCard 
+                      key={media.id} 
+                      media={media}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </section>
+
+          {/* Bottom Ad Unit */}
+          <div className="w-full flex justify-center">
+            <AdUnit 
+              slot="5432109876"
+              className="my-4"
+            />
+          </div>
         </div>
       </main>
     </>
